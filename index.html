@@ -96,12 +96,12 @@
             position: fixed;
             top: 20px;
             right: 75px;
-            background: var(--card-bg);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: linear-gradient(135deg, #00d2ff, #3a7bd5);
+            border: none;
             width: 45px;
             height: 45px;
             border-radius: 50%;
-            color: var(--text-color);
+            color: white;
             cursor: pointer;
             backdrop-filter: blur(10px);
             z-index: 1001;
@@ -109,19 +109,22 @@
             align-items: center;
             justify-content: center;
             font-size: 1.2rem;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            box-shadow: 0 0 20px rgba(0, 210, 255, 0.6);
+            animation: pulse-blue 2s infinite;
+            transition: transform 0.3s;
         }
+        .changelog-btn:hover { transform: scale(1.1); }
 
         .feedback-btn {
             position: fixed;
             top: 20px;
             right: 130px;
-            background: var(--card-bg);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: linear-gradient(135deg, #ff0055, #ff4757);
+            border: none;
             width: 45px;
             height: 45px;
             border-radius: 50%;
-            color: var(--text-color);
+            color: white;
             cursor: pointer;
             backdrop-filter: blur(10px);
             z-index: 1001;
@@ -129,8 +132,11 @@
             align-items: center;
             justify-content: center;
             font-size: 1.2rem;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            box-shadow: 0 0 20px rgba(255, 0, 85, 0.6);
+            animation: pulse-red 2s infinite;
+            transition: transform 0.3s;
         }
+        .feedback-btn:hover { transform: scale(1.1); }
 
         .clock-widget {
             position: fixed;
@@ -518,6 +524,18 @@
         .feedback-select option {
             background: #1a0b2e;
             color: white;
+        }
+
+        @keyframes pulse-blue {
+            0% { box-shadow: 0 0 0 0 rgba(0, 210, 255, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(0, 210, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 210, 255, 0); }
+        }
+
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(255, 0, 85, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(255, 0, 85, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 0, 85, 0); }
         }
     </style>
 </head>
