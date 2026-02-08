@@ -10,27 +10,35 @@
     <style>
         :root {
             --primary: #00d2ff;
-            --bg-dark: #060b28;
-            --card-bg: rgba(255, 255, 255, 0.05);
-            --text-color: white;
-            --sub-text: #888;
-            --bg-gradient: linear-gradient(125deg, #060b28, #0a1535, #1a0b2e, #2d0b1e, #060b28);
+            --secondary: #7000ff;
+            --accent: #ff0055;
+            --bg-dark: #050a1f;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text-color: #ffffff;
+            --sub-text: #a0a0a0;
+            --bg-gradient: linear-gradient(135deg, #050a1f, #0f1c4d, #1a0b2e, #2d0b1e, #050a1f);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            --hover-glow: 0 0 25px rgba(0, 210, 255, 0.4);
         }
 
         [data-theme="light"] {
-            --bg-dark: #f0f2f5;
-            --card-bg: rgba(0, 0, 0, 0.05);
-            --text-color: #ffe6e6;
-            --text-outline: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
+            --bg-dark: #f0f4f8;
+            --card-bg: rgba(255, 255, 255, 0.65);
+            --card-border: rgba(255, 255, 255, 0.8);
+            --text-color: #1a1a2e;
+            --text-outline: none;
             --sub-text: #555;
-            --bg-gradient: linear-gradient(125deg, #e0eafc, #cfdef3, #e8f5e9, #f0f2f5);
+            --bg-gradient: linear-gradient(135deg, #e0eafc, #cfdef3, #e2ebf0, #e0eafc);
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+            --hover-glow: 0 0 25px rgba(0, 210, 255, 0.25);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Segoe UI', sans-serif; transition: background 0.3s, color 0.3s; }
 
         body {
             background: var(--bg-gradient);
-            background-size: 400% 400%;
+            background-size: 300% 300%;
             animation: gradientBG 20s ease infinite, fadeInPage 1.5s ease-out;
             color: var(--text-color);
             min-height: 100vh;
@@ -117,12 +125,18 @@
         }
         .external-link:hover { transform: scale(1.05); }
 
-        .container { width: 100%; max-width: 1100px; padding: 20px; text-align: center; }
+        .container { width: 100%; max-width: 1100px; padding: 20px; text-align: center; position: relative; z-index: 5; }
 
         .header-section { 
             margin-bottom: 50px; 
-            transition: 0.5s; 
+            transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+            cursor: pointer;
             animation: float 6s ease-in-out infinite;
+            position: relative;
+        }
+        
+        .header-section:hover {
+            transform: scale(1.02);
         }
         
         @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
@@ -132,12 +146,16 @@
         #greeting { 
             font-size: 2.2rem; 
             font-weight: bold; 
-            background: linear-gradient(to right, #d8b4fe, #818cf8); 
+            background: linear-gradient(to right, var(--primary), #d8b4fe, var(--secondary)); 
+            background-size: 200% auto;
+            animation: shine 5s linear infinite;
             -webkit-background-clip: text; 
             -webkit-text-fill-color: transparent; 
             transition: all 1s ease;
             max-height: 100px;
         }
+        
+        @keyframes shine { to { background-position: 200% center; } }
 
         #welcome-msg {
             margin-top: 10px;
@@ -148,19 +166,34 @@
             max-height: 100px;
         }
 
-        .categories-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; width: 100%; }
+        .categories-container { 
+            display: none; 
+            flex-wrap: wrap; justify-content: center; gap: 20px; width: 100%; 
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
 
         .category-pod {
             width: 100%; max-width: 500px;
             background: var(--card-bg);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--card-border);
             padding: 25px 30px; border-radius: 20px;
             cursor: pointer; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             display: flex; align-items: center; gap: 20px;
             flex-wrap: wrap; backdrop-filter: blur(15px); position: relative;
             overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            box-shadow: var(--glass-shadow);
+            animation: slideUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
         }
+        
+        @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .category-pod:nth-child(1) { animation-delay: 0.1s; }
+        .category-pod:nth-child(2) { animation-delay: 0.2s; }
+        .category-pod:nth-child(3) { animation-delay: 0.3s; }
+        .category-pod:nth-child(4) { animation-delay: 0.4s; }
+        .category-pod:nth-child(5) { animation-delay: 0.5s; }
         
         .category-pod::before {
             content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
@@ -168,7 +201,7 @@
             transition: 0.5s;
         }
 
-        .category-pod:hover { background: rgba(255, 255, 255, 0.1); transform: translateY(-5px) scale(1.02); border-color: var(--primary); box-shadow: 0 15px 30px rgba(0, 210, 255, 0.15); }
+        .category-pod:hover { background: rgba(255, 255, 255, 0.1); transform: translateY(-7px) scale(1.02); border-color: var(--primary); box-shadow: var(--hover-glow); }
         .category-pod:hover::before { left: 100%; }
         
         .pod-icon { width: 60px; height: 60px; background: rgba(0, 210, 255, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; animation: icon-pulse 2s infinite; }
@@ -183,8 +216,8 @@
         .category-pod.active:hover { transform: none; box-shadow: none; }
         .category-pod.hidden { display: none; }
 
-        .tool-card { background: rgba(255, 255, 255, 0.05); padding: 25px; border-radius: 20px; text-decoration: none; color: var(--text-color); border: 1px solid rgba(255, 255, 255, 0.05); transition: 0.3s; display: flex; flex-direction: column; gap: 8px; animation: fadeInOut 0.6s ease backwards; }
-        .tool-card:hover { background: var(--primary); color: #060b28; transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0, 210, 255, 0.3); }
+        .tool-card { background: var(--card-bg); padding: 25px; border-radius: 20px; text-decoration: none; color: var(--text-color); border: 1px solid var(--card-border); transition: 0.3s; display: flex; flex-direction: column; gap: 8px; animation: fadeInOut 0.6s ease backwards; position: relative; overflow: hidden; }
+        .tool-card:hover { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; transform: translateY(-5px) scale(1.03); box-shadow: var(--hover-glow); border-color: transparent; }
         .tool-card strong { font-size: 1.1rem; }
         .tool-card span { font-size: 0.7rem; opacity: 0.7; }
 
@@ -206,6 +239,21 @@
             box-shadow: 0 10px 20px rgba(0,0,0,0.5); 
             border: none; 
         }
+        
+        .btn-landing {
+            display: none;
+            margin: 30px auto;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+            padding: 12px 30px;
+            border-radius: 50px;
+            border: 1px solid var(--card-border);
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: bold;
+            backdrop-filter: blur(10px);
+        }
+        .btn-landing:hover { background: var(--primary); color: #050a1f; box-shadow: var(--hover-glow); border-color: transparent; }
 
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -287,6 +335,47 @@
         }
         .whatsapp-btn:hover { transform: scale(1.1); }
         .whatsapp-btn img { width: 100%; height: 100%; object-fit: cover; }
+
+        .tip-box {
+            position: fixed;
+            top: 80px;
+            right: -400px;
+            background: rgba(5, 10, 31, 0.9);
+            border: 1px solid var(--primary);
+            border-left: 5px solid var(--primary);
+            padding: 15px 20px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+            z-index: 3000;
+            transition: right 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            max-width: 320px;
+            backdrop-filter: blur(10px);
+        }
+        .tip-box.show { right: 30px; }
+        .tip-icon { font-size: 1.5rem; animation: icon-pulse 2s infinite; }
+        .tip-content h4 { margin-bottom: 4px; color: var(--primary); font-size: 0.95rem; font-weight: bold; }
+        .tip-content p { font-size: 0.85rem; color: var(--text-color); margin: 0; opacity: 0.9; }
+
+        .bg-logos {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1; display: flex; flex-direction: column; justify-content: space-evenly;
+            pointer-events: none; opacity: 0.15;
+            transition: filter 0.8s ease, opacity 0.8s ease; overflow: hidden;
+        }
+        .bg-logos.blur { filter: blur(10px); opacity: 0.05; }
+        .logo-track {
+            display: flex; width: max-content;
+            animation: scrollLogos 60s linear infinite;
+        }
+        .logo-track.reverse { animation-direction: reverse; }
+        .logo-track img {
+            height: 100px; width: auto; margin: 0 20px;
+            opacity: 0.8;
+        }
+        @keyframes scrollLogos { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
     </style>
 </head>
 <body id="bodyMain">
@@ -303,11 +392,13 @@
         <img src="main/img/whatsapp.jpg" alt="WhatsApp Contact">
     </a>
 
+    <div class="bg-logos" id="bgLogos"></div>
+
     <div class="container">
-        <div class="header-section" id="header">
+        <div class="header-section" id="header" onclick="enterMenu()" title="Click to Enter">
             <img src="main/img/SAFD.png" alt="SAFD Logo" style="width: 140px; height: auto; margin-bottom: 15px; filter: drop-shadow(0 0 15px rgba(0, 210, 255, 0.4));">
             <h1 style="font-size: 2rem; font-weight: 800; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px;">San Andreas Fire Department</h1>
-            <h2 style="font-size: 1rem; font-weight: 500; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px;">We Fight Wahat You Fear</h2>
+            <h2 style="font-size: 1rem; font-weight: 500; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px;">We Fight What You Fear!!!</h2>
             <h1 id="greeting">Loading...</h1>
             <p id="welcome-msg">It's nice to see you. Ready to get things done?</p>
         </div>
@@ -315,7 +406,7 @@
         <div class="categories-container" id="wrapper">
             <div class="category-pod" onclick="openPod(this)">
                 <div class="pod-icon" style="background: none;">
-                    <img src="main/img/SAFD.png" alt="FM Logo" style="width: 70px; height: 70px; object-fit: contain;">
+                    <img src="main/img/SAFD.png" alt="SAFD Logo" style="width: 70px; height: auto; object-fit: contain;">
                 </div>
                 <div class="pod-info">
                     <h2>Hospital Tools</h2>
@@ -333,7 +424,7 @@
 
             <div class="category-pod" onclick="openPod(this)">
                 <div class="pod-icon" style="background: none;">
-                    <img src="main/img/SAFD.png" alt="FM Logo" style="width: 70px; height: 70px; object-fit: contain;">
+                    <img src="main/img/SAFD.png" alt="SAFD Logo" style="width: 70px; height: auto; object-fit: contain;">
                 </div>
                 <div class="pod-info">
                     <h2>Firefighters Tools</h2>
@@ -347,7 +438,7 @@
 
             <div class="category-pod" onclick="confirmAccess(this, 'HCI')">
                 <div class="pod-icon" style="background: none;">
-                    <img src="main/img/HCI.png" alt="FM Logo" style="width: 70px; height: 70px; object-fit: contain;">
+                    <img src="main/img/HCI.png" alt="HCI Logo" style="width: 70px; height: auto; object-fit: contain;">
                 </div>
                 <div class="pod-info">
                     <h2>Healthcare & Insurance</h2>
@@ -361,7 +452,7 @@
 
             <div class="category-pod" onclick="confirmAccess(this, 'SFO')">
                 <div class="pod-icon" style="background: none;">
-                    <img src="main/img/SFO.png" alt="FM Logo" style="width: 70px; height: 70px; object-fit: contain;">
+                    <img src="main/img/SFO.png" alt="SFO Logo" style="width: 70px; height: auto; object-fit: contain;">
                 </div>
                 <div class="pod-info">
                     <h2>(Sub) - Fire Officer Tools</h2>
@@ -379,7 +470,7 @@
             <div class="category-pod" onclick="confirmAccess(this, 'FM')">
                 <button class="fm-info-btn" onclick="showFMInfo(event)">!</button>
                 <div class="pod-icon" style="background: none;">
-                    <img src="main/img/FM.png" alt="FM Logo" style="width: 70px; height: 70px; object-fit: contain;">
+                    <img src="main/img/FM.png" alt="FM Logo" style="width: 70px; height: auto; object-fit: contain;">
                 </div>
                 <div class="pod-info">
                     <h2>Financial Management</h2>
@@ -399,9 +490,18 @@
             </div>
         </div>
 
-        <h3 id="footer-prompt" style="margin-top: 40px; color: var(--sub-text); font-weight: 400; letter-spacing: 2px; text-transform: uppercase; font-size: 1rem; transition: all 0.5s ease; max-height: 50px; overflow: hidden;">What do you need?</h3>
+        <h3 id="footer-prompt" style="display: none; margin-top: 40px; color: var(--sub-text); font-weight: 400; letter-spacing: 2px; text-transform: uppercase; font-size: 1rem; transition: all 0.5s ease; max-height: 50px; overflow: hidden;">What do you need?</h3>
 
+        <button class="btn-landing" id="btn-landing" onclick="backToLanding()">Back to Landing Page</button>
         <button class="btn-back" id="backBtn" onclick="closeAll(event)">Back to Menu</button>
+    </div>
+
+    <div id="tip-box" class="tip-box">
+        <div class="tip-icon">💡</div>
+        <div class="tip-content">
+            <h4>Tip</h4>
+            <p>Push Department Logo</p>
+        </div>
     </div>
 
     <div id="access-warning-modal" class="modal-overlay">
@@ -433,7 +533,8 @@
         <div class="modal-content" style="text-align: left; max-width: 600px;">
             <h3 style="color: #00d2ff; margin-bottom: 20px; text-align: center; font-size: 1.5rem;">IMPORTANT INFORMATION</h3>
             <ol style="line-height: 1.6; margin-bottom: 25px; padding-left: 20px; font-size: 1rem;">
-                <li style="margin-bottom: 10px;">Jangan membuka kalkulator hospital lain karena akan berpengaruh pada localstorage kalian masing masing.</li>
+                <li style="margin-bottom: 10px;">Tekan tombol reset data pada weekly bonus calculator untuk mengembalikan data seperti semula.</li>
+                <li style="margin-bottom: 10px;">Jika ada perubahan roster district harap mengabari Director / Asistant Chief of Financial Management / Controller Financial Management.</li>
                 <li style="margin-bottom: 10px;">Semoga dengan adanya website ini akan membantu personil SAFD dan meningkatkan performa kerja.</li>
                 <li>Kalo ada pertanyaan jangan sungkan untuk bertanya di grup yeahhh gesss.</li>
             </ol>
@@ -472,16 +573,16 @@
             let subText = "";
 
             if (hour >= 5 && hour < 12) {
-                greetText = "Good Morning";
+                greetText = "Good Morning, buddy!!!";
                 subText = "Rise and shine! Wishing you a productive start to your day.";
             } else if (hour >= 12 && hour < 17) {
-                greetText = "Good Afternoon";
+                greetText = "Good Afternoon, buddy!!!";
                 subText = "Hope your day is going well! Let's finish those tasks.";
             } else if (hour >= 17 && hour < 21) {
-                greetText = "Good Evening";
+                greetText = "Good Evening, buddy!!!";
                 subText = "Wrapping up the day? You've worked hard today.";
             } else {
-                greetText = "Good Night";
+                greetText = "Good Night, buddy!!!";
                 subText = "Burning the midnight oil? Don't forget to rest soon.";
             }
 
@@ -506,9 +607,15 @@
             greetingElement.style.opacity = '0';
             
             setTimeout(() => {
-                const now = new Date();
-                const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                greetingElement.innerText = `Now is ${timeString}`;
+                const careMessages = [
+                    "Have you eaten yet?",
+                    "Don't forget to drink water!",
+                    "Take a deep breath.",
+                    "Remember to rest a bit.",
+                    "Hope you're having a good day!"
+                ];
+                const randomMessage = careMessages[Math.floor(Math.random() * careMessages.length)];
+                greetingElement.innerText = randomMessage;
                 greetingElement.style.opacity = '1';
                 
                 setTimeout(() => {
@@ -518,31 +625,105 @@
             }, 1000);
         }, 3000);
 
+        function enterMenu() {
+            const header = document.getElementById('header');
+            const wrapper = document.getElementById('wrapper');
+            const btnLanding = document.getElementById('btn-landing');
+            const footerPrompt = document.getElementById('footer-prompt');
+            const bgLogos = document.getElementById('bgLogos');
+
+            // Hide Tip Box
+            const tipBox = document.getElementById('tip-box');
+            if(tipBox) tipBox.classList.remove('show');
+
+            // Animate Header Out
+            header.style.animation = 'none'; // Stop float animation
+            header.style.opacity = '0';
+            header.style.transform = 'scale(0.7) translateY(-50px)';
+            header.style.filter = 'blur(10px)';
+            header.style.pointerEvents = 'none';
+            
+            if(bgLogos) bgLogos.classList.add('blur');
+
+            setTimeout(() => {
+                header.style.display = 'none';
+                
+                // Show Menu
+                wrapper.style.display = 'flex';
+                btnLanding.style.display = 'block';
+                if(footerPrompt) footerPrompt.style.display = 'block';
+                
+                // Trigger Reflow
+                void wrapper.offsetWidth;
+                
+                // Animate Menu In
+                wrapper.style.opacity = '1';
+                wrapper.style.transform = 'scale(1)';
+            }, 800);
+        }
+
+        function backToLanding() {
+            const header = document.getElementById('header');
+            const wrapper = document.getElementById('wrapper');
+            const btnLanding = document.getElementById('btn-landing');
+            const footerPrompt = document.getElementById('footer-prompt');
+            const bgLogos = document.getElementById('bgLogos');
+
+            // Animate Menu Out
+            wrapper.style.opacity = '0';
+            wrapper.style.transform = 'scale(0.8)';
+            btnLanding.style.display = 'none';
+            if(footerPrompt) footerPrompt.style.display = 'none';
+
+            setTimeout(() => {
+                wrapper.style.display = 'none';
+                
+                // Show Header
+                header.style.display = 'block';
+                void header.offsetWidth;
+                
+                // Animate Header In
+                header.style.opacity = '1';
+                header.style.transform = 'scale(1) translateY(0)';
+                header.style.filter = 'blur(0)';
+                header.style.pointerEvents = 'all';
+                
+                if(bgLogos) bgLogos.classList.remove('blur');
+                
+                setTimeout(() => { header.style.animation = 'float 6s ease-in-out infinite'; }, 800);
+            }, 500);
+        }
+
         function openPod(element) {
             if(element.classList.contains('active')) return;
             const allPods = document.querySelectorAll('.category-pod');
-            const header = document.getElementById('header');
             const backBtn = document.getElementById('backBtn');
             const footerPrompt = document.getElementById('footer-prompt');
+            const btnLanding = document.getElementById('btn-landing');
 
             allPods.forEach(pod => { if(pod !== element) pod.classList.add('hidden'); });
             element.classList.add('active');
-            header.classList.add('hide');
-            if(footerPrompt) footerPrompt.classList.add('fade-out');
+            
+            if(footerPrompt) footerPrompt.style.display = 'none';
+            btnLanding.style.display = 'none';
             backBtn.style.display = 'block';
         }
 
         function closeAll(event) {
             if(event) event.stopPropagation();
             const allPods = document.querySelectorAll('.category-pod');
-            const header = document.getElementById('header');
             const backBtn = document.getElementById('backBtn');
             const footerPrompt = document.getElementById('footer-prompt');
+            const btnLanding = document.getElementById('btn-landing');
+            const header = document.getElementById('header');
 
             allPods.forEach(pod => { pod.classList.remove('hidden'); pod.classList.remove('active'); });
             backBtn.style.display = 'none';
-            if(footerPrompt) footerPrompt.classList.remove('fade-out');
-            header.classList.remove('hide');
+            
+            if (header.style.display === 'none') {
+                if(footerPrompt) footerPrompt.style.display = 'block';
+                btnLanding.style.display = 'block';
+            }
         }
 
         let pendingPod = null;
@@ -668,6 +849,26 @@
         document.getElementById('bodyMain').onclick = function(e) {
             if(e.target.id === 'bodyMain' || e.target.classList.contains('container')) closeAll(e);
         }
+
+        // Tip Box System
+        setTimeout(() => {
+            const tipBox = document.getElementById('tip-box');
+            if(tipBox) tipBox.classList.add('show');
+        }, 2000);
+
+        // Background Logos Animation
+        const logoNames = ['ASGH', 'CGH', 'FCH', 'FS34', 'FS60', 'HCI', 'OFPI', 'PA', 'MED', 'FSD', 'TD', 'RD'];
+        const bgLogosContainer = document.getElementById('bgLogos');
+        function createLogoRow(direction) {
+            const row = document.createElement('div');
+            row.className = `logo-track ${direction}`;
+            const content = logoNames.map(name => `<img src="main/img/${name}.png" alt="${name}">`).join('');
+            row.innerHTML = content + content + content; // Triple content for seamless loop on wide screens
+            bgLogosContainer.appendChild(row);
+        }
+        createLogoRow('normal');
+        createLogoRow('reverse');
+        createLogoRow('normal');
     </script>
 </body>
 </html>
