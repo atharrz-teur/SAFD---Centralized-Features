@@ -7,153 +7,212 @@
     <title>BLS Assessment Generator - SAFD</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #bf4000;
-            --bg-body: #f8f9fa;
-            --bg-card: #ffffff;
-            --text-main: #212529;
-            --border-color: #dee2e6;
+            --primary-gradient: linear-gradient(135deg, #ff416c, #ff4b2b);
+            --primary-color: #ff4b2b;
+            --secondary-color: #ff416c;
+            --bg-body: #f0f2f5;
+            --bg-card: rgba(255, 255, 255, 0.95);
+            --text-main: #2d3436;
+            --text-muted: #636e72;
+            --border-color: rgba(0,0,0,0.05);
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            --input-bg: #f8f9fa;
+            --input-border: #e9ecef;
         }
 
         [data-theme="dark"] {
-            --bg-body: #212529;
-            --bg-card: #343a40;
-            --text-main: #f8f9fa;
-            --border-color: #495057;
+            --bg-body: #1e1e2e;
+            --bg-card: rgba(30, 30, 46, 0.95);
+            --text-main: #dfe6e9;
+            --text-muted: #b2bec3;
+            --border-color: rgba(255,255,255,0.05);
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            --input-bg: #262636;
+            --input-border: #363646;
         }
 
         body {
-            background-color: var(--bg-body);
+            background: var(--bg-body);
             color: var(--text-main);
-            transition: background-color 0.3s ease, color 0.3s ease;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            min-height: 100vh;
+            background-image: radial-gradient(circle at 10% 20%, rgba(255, 75, 43, 0.03) 0%, transparent 20%),
+                              radial-gradient(circle at 90% 80%, rgba(255, 65, 108, 0.03) 0%, transparent 20%);
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
         .main-wrapper {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 40px 20px;
         }
 
         .card {
-            background-color: var(--bg-card);
+            background: var(--bg-card);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            margin-bottom: 20px;
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+            margin-bottom: 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
         }
 
         .header-section {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 30px 40px;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 30px;
-            padding: 20px 0;
-            border-bottom: 2px solid var(--primary-color);
+        }
+        
+        .header-section::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 4px;
+            background: var(--primary-gradient);
         }
 
         .logo-container {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 25px;
         }
 
         .logo-container img {
-            height: 80px;
+            height: 70px;
             width: auto;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
         }
 
         .page-title h1 {
-            font-weight: 700;
+            font-weight: 800;
             margin: 0;
-            font-size: 1.8rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            font-size: 1.6rem;
+            letter-spacing: -0.5px;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .page-title span {
-            font-size: 1rem;
-            color: var(--primary-color);
+            font-size: 0.95rem;
+            color: var(--text-muted);
             font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
         }
 
         .theme-btn {
-            background: transparent;
+            background: var(--input-bg);
             border: 1px solid var(--border-color);
             color: var(--text-main);
-            width: 45px;
-            height: 45px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s ease;
             font-size: 1.2rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
         }
 
         .theme-btn:hover {
-            background-color: var(--primary-color);
+            background: var(--primary-gradient);
             color: white;
-            border-color: var(--primary-color);
+            border-color: transparent;
+            transform: rotate(15deg);
         }
 
         .section-header {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 8px 8px 0 0;
-            font-weight: 600;
+            padding: 20px 30px;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 700;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            font-size: 1.1rem;
+            color: var(--primary-color);
+        }
+        
+        .section-header i {
+            background: rgba(255, 75, 43, 0.1);
+            padding: 8px;
+            border-radius: 8px;
+            font-size: 1rem;
         }
 
         .form-label {
-            font-weight: 500;
-            color: var(--primary-color);
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 8px;
         }
 
         .form-control, .form-select {
-            background-color: var(--bg-body);
-            border-color: var(--border-color);
+            background-color: var(--input-bg);
+            border: 2px solid var(--input-border);
             color: var(--text-main);
-            padding: 10px 15px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            transition: all 0.2s;
         }
 
         .form-control:focus {
-            background-color: var(--bg-body);
+            background-color: var(--bg-card);
             color: var(--text-main);
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.25rem rgba(191, 64, 0, 0.25);
+            box-shadow: 0 0 0 4px rgba(255, 75, 43, 0.1);
         }
 
         .checklist-group {
-            padding: 15px;
+            padding: 25px;
         }
 
         .checklist-item {
             display: flex;
             align-items: flex-start;
             margin-bottom: 12px;
-            padding: 8px;
-            border-radius: 6px;
+            padding: 12px 16px;
+            border-radius: 12px;
             transition: background 0.2s;
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
         }
 
         .checklist-item:hover {
-            background-color: rgba(0,0,0,0.03);
+            border-color: var(--primary-color);
+            background: var(--bg-card);
         }
 
         [data-theme="dark"] .checklist-item:hover {
-            background-color: rgba(255,255,255,0.05);
+            border-color: var(--primary-color);
         }
 
         .form-check-input {
             margin-top: 0.3em;
-            margin-right: 10px;
+            margin-right: 12px;
             cursor: pointer;
+            width: 1.2em;
+            height: 1.2em;
+            border: 2px solid var(--border-color);
+            background-color: var(--bg-card);
         }
 
         .form-check-input:checked {
@@ -162,13 +221,14 @@
         }
 
         .score-display {
-            font-size: 1.2rem;
-            font-weight: bold;
+            font-size: 1.1rem;
+            font-weight: 700;
             text-align: right;
-            padding: 15px;
-            background-color: var(--bg-body);
+            padding: 20px 30px;
+            background-color: var(--input-bg);
             border-top: 1px solid var(--border-color);
-            border-radius: 0 0 12px 12px;
+            border-radius: 0 0 24px 24px;
+            color: var(--text-main);
         }
 
         .screenshot-row {
@@ -178,35 +238,50 @@
         }
 
         .btn-add-ss {
-            border-style: dashed;
+            border: 2px dashed var(--border-color);
             color: var(--text-main);
+            background: transparent;
+            transition: all 0.2s;
+        }
+        
+        .btn-add-ss:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            background: rgba(255, 75, 43, 0.05);
         }
 
         .footer {
             text-align: center;
-            margin-top: 40px;
-            padding: 20px;
+            margin-top: 50px;
+            padding: 30px;
             border-top: 1px solid var(--border-color);
             font-size: 0.9rem;
-            opacity: 0.8;
+            color: var(--text-muted);
         }
 
         .btn-primary {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-            padding: 10px 25px;
-            font-weight: 600;
+            background: var(--primary-gradient);
+            border: none;
+            padding: 14px 30px;
+            font-weight: 700;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(255, 75, 43, 0.3);
+            transition: all 0.3s;
         }
 
         .btn-primary:hover {
-            background-color: #9e3500;
-            border-color: #9e3500;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 75, 43, 0.4);
         }
 
         #outputArea {
-            font-family: monospace;
-            font-size: 0.9rem;
-            min-height: 200px;
+            font-family: 'Consolas', monospace;
+            font-size: 0.85rem;
+            min-height: 250px;
+            background-color: var(--input-bg);
+            border: 2px solid var(--input-border);
+            border-radius: 12px;
+            color: var(--text-main);
         }
     </style>
 </head>
@@ -457,13 +532,6 @@
     document.addEventListener('DOMContentLoaded', () => {
         initTheme();
         renderChecklist();
-        
-        // Set default date
-        const today = new Date();
-        const dd = String(today.getDate()).padStart(2, '0');
-        const mmm = today.toLocaleString('default', { month: 'short' }).toUpperCase();
-        const yyyy = today.getFullYear();
-        document.getElementById('dateInput').value = `${dd}/${mmm}/${yyyy}`;
     });
 
     // --- Theme Logic ---
@@ -557,7 +625,7 @@
     function generateBBCode() {
         const demonstrant = document.getElementById('demonstrantName').value;
         const examiner = document.getElementById('examinerName').value;
-        const date = document.getElementById('dateInput').value;
+        const date = document.getElementById('dateInput').value || document.getElementById('dateInput').placeholder;
         const injury = document.getElementById('injuryCase').value;
         const supervisorName = document.getElementById('supervisorName').value;
         
