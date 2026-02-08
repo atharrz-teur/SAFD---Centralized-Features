@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://i.postimg.cc/V6qpRTsK/SAFD-LOGO-MINI2.png">
+    <title>SAFD Absence Generator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #c62828;
+            --primary-hover: #b71c1c;
+            --bg-body: #f4f7f6;
+            --bg-card: #ffffff;
+            --text-main: #2d3436;
+            --text-muted: #636e72;
+            --border-color: #dfe6e9;
+            --input-bg: #ffffff;
+        }
+
+        [data-theme="dark"] {
+            --bg-body: #121212;
+            --bg-card: #1e1e1e;
+            --text-main: #e0e0e0;
+            --text-muted: #b0b0b0;
+            --border-color: #333333;
+            --input-bg: #2d2d2d;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header & Navigation */
+        .navbar {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        .nav-left, .nav-right { display: flex; gap: 10px; pointer-events: auto; }
+
+        .btn {
+            padding: 10px 18px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-outline {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            width: 100%;
+            justify-content: center;
+            margin-top: 20px;
+            font-size: 1.1rem;
+        }
+
+        .btn-primary:hover { background: var(--primary-hover); }
+
+        /* Card Style */
+        .card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-top: 5px solid var(--primary);
+            margin-top: 60px;
+        }
+
+        .header-brand {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header-brand img { height: 80px; margin-bottom: 10px; }
+        .header-brand h1 { margin: 0; font-size: 1.5rem; letter-spacing: 2px; }
+
+        /* Form Grid */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .section-title {
+            grid-column: span 2;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-top: 20px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .input-group { margin-bottom: 15px; }
+        .input-group.full { grid-column: span 2; }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: var(--input-bg);
+            color: var(--text-main);
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        input:focus { border-color: var(--primary); }
+
+        /* Output Area */
+        #output-container {
+            margin-top: 30px;
+            display: none;
+        }
+
+        textarea#bbcode-result {
+            font-family: 'Courier New', Courier, monospace;
+            height: 200px;
+            resize: vertical;
+        }
+
+        .copy-success {
+            color: #27ae60;
+            font-size: 0.8rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .section-title { grid-column: span 1; }
+            .input-group.full { grid-column: span 1; }
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body data-theme="system">
+
+    <div class="navbar">
+        <div class="nav-left">
+            <a href="../index.html" class="btn btn-outline">
+                <i class="fas fa-arrow-left"></i> Back to Menu
+            </a>
+        </div>
+        <div class="nav-right">
+            <button class="btn btn-outline" onclick="toggleTheme()" id="theme-btn">
+                <i class="fas fa-circle-half-stroke"></i> Theme
+            </button>
+        </div>
+    </div>
+
+<div class="container">
+    <div class="card">
+        <div class="header-brand">
+            <img src="img/SAFD.png" alt="SAFD Logo">
+            <h1>SAFD ABSENCE</h1>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">Internal Diciplinary</p>
+        </div>
+
+        <form id="loaForm">
+            <div class="form-grid">
+                <div class="section-title"><i class="fas fa-user"></i> A — Employee Information</div>
+                <div class="input-group">
+                    <label>Full Name</label>
+                    <input type="text" id="a1" placeholder="Abertfort Zeonathaan" required>
+                </div>
+                <div class="input-group">
+                    <label>District</label>
+                    <select id="a2">
+                        <option value="">Select District</option>
+                        <option value="FCH">FCH</option>
+                        <option value="FS34">FS34</option>
+                        <option value="FS60">FS60</option>
+                        <option value="CGH">CGH</option>
+                        <option value="ASGH">ASGH</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Position</label>
+                    <input type="text" id="a3" placeholder="Resident" required>
+                </div>
+                <div class="input-group">
+                    <label>Badge Number / Employee #</label>
+                    <input type="text" id="a4" placeholder="12345" required>
+                </div>
+                <div class="input-group full">
+                    <label>Department Serving</label>
+                    <select id="a5">
+                        <option value="Field">Field</option>
+                        <option value="Hospital">Hospital</option>
+                    </select>
+                </div>
+
+                <div class="section-title"><i class="fas fa-calendar-days"></i> B — Absence Details</div>
+                <div class="input-group">
+                    <label>Type of Absence</label>
+                    <select id="b1">
+                        <option value="Full Absence">Full Absence</option>
+                        <option value="Part Absence">Part Absence</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Reason of Absence</label>
+                    <input type="text" id="b2" placeholder="Vacation / Health Issue" required>
+                </div>
+                <div class="input-group">
+                    <label>Date of Leave</label>
+                    <input type="date" id="b3">
+                </div>
+                <div class="input-group">
+                    <label>Date of Return</label>
+                    <input type="date" id="b4">
+                </div>
+                <div class="input-group full">
+                    <label>Number of Day(s) Away</label>
+                    <input type="number" id="b5" placeholder="7">
+                </div>
+
+                <div class="section-title"><i class="fas fa-pen-nib"></i> C — Verification & OOC</div>
+                <div class="input-group full">
+                    <label>Signature Type</label>
+                    <div style="display: flex; gap: 20px; margin-bottom: 10px;">
+                        <label style="display: inline-flex; align-items: center; font-weight: normal;"><input type="radio" name="sig_type" value="text" checked onchange="toggleSigType()" style="width: auto; margin-right: 5px;"> Text</label>
+                        <label style="display: inline-flex; align-items: center; font-weight: normal;"><input type="radio" name="sig_type" value="image" onchange="toggleSigType()" style="width: auto; margin-right: 5px;"> Image</label>
+                    </div>
+                </div>
+
+                <div id="sig_text_container" class="input-group full">
+                    <label>Signature Text</label>
+                    <input type="text" id="sig_text_val" placeholder="John Doe">
+                    
+                    <div style="display: flex; gap: 15px; margin-top: 10px; flex-wrap: wrap;">
+                        <label style="display: inline-flex; align-items: center; font-weight: normal;"><input type="checkbox" id="sig_bold" style="width: auto; margin-right: 5px;"> Bold</label>
+                        <label style="display: inline-flex; align-items: center; font-weight: normal;"><input type="checkbox" id="sig_italic" style="width: auto; margin-right: 5px;"> Italic</label>
+                        <label style="display: inline-flex; align-items: center; font-weight: normal;"><input type="checkbox" id="sig_underline" style="width: auto; margin-right: 5px;"> Underline</label>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+                        <div>
+                            <label>Font</label>
+                            <select id="sig_font">
+                                <option value="">Default</option>
+                                <option value="Arial">Arial</option>
+                                <option value="Courier New">Courier New</option>
+                                <option value="Times New Roman">Times New Roman</option>
+                                <option value="Verdana">Verdana</option>
+                                <option value="Impact">Impact</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>Size</label>
+                            <select id="sig_size">
+                                <option value="50">Tiny</option>
+                                <option value="85">Small</option>
+                                <option value="">Normal</option>
+                                <option value="150">Large</option>
+                                <option value="200">Huge</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="sig_image_container" class="input-group full" style="display: none;">
+                    <label>Signature Image URL</label>
+                    <input type="text" id="sig_img_url" placeholder="https://i.imgur.com/...">
+                </div>
+
+                <div class="input-group full">
+                    <label>Today's Date</label>
+                    <input type="date" id="sig_date" required>
+                </div>
+                <div class="input-group full">
+                    <label>(( OOC Reason ))</label>
+                    <textarea id="c1" rows="2" placeholder="Real life busy, exam, etc."></textarea>
+                </div>
+            </div>
+
+            <button type="button" class="btn btn-primary" onclick="generateBBCode()">
+                <i class="fas fa-code"></i> Generate BBCode
+            </button>
+        </form>
+
+        <div id="output-container">
+            <div class="section-title">Result</div>
+            <textarea id="bbcode-result" readonly onclick="this.select()"></textarea>
+            <button class="btn btn-outline" style="width:100%; margin-top:10px;" onclick="copyBBCode()">
+                <i class="fas fa-copy"></i> Copy to Clipboard
+            </button>
+            <p class="copy-success" id="copy-msg">BBCode copied successfully!</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        &copy; 2026 <strong>San Andreas Fire Department</strong> • North Bureau<br>
+        Developed by Abertforth Zeonathaan - Athar
+    </div>
+</div>
+
+<script>
+    // Theme Management
+    const themes = ['system', 'light', 'dark'];
+    let currentThemeIdx = 0;
+
+    function toggleTheme() {
+        currentThemeIdx = (currentThemeIdx + 1) % themes.length;
+        const theme = themes[currentThemeIdx];
+        document.body.setAttribute('data-theme', theme);
+        
+        const btn = document.getElementById('theme-btn');
+        if(theme === 'system') {
+            btn.innerHTML = '<i class="fas fa-circle-half-stroke"></i> System';
+            applySystemTheme();
+        } else if(theme === 'dark') {
+            btn.innerHTML = '<i class="fas fa-moon"></i> Dark';
+        } else {
+            btn.innerHTML = '<i class="fas fa-sun"></i> Light';
+        }
+    }
+
+    function applySystemTheme() {
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.body.setAttribute('data-theme', 'dark');
+        } else {
+            document.body.setAttribute('data-theme', 'light');
+        }
+    }
+
+    // BBCode Generation
+    function generateBBCode() {
+        const val = (id) => document.getElementById(id).value || "N/A";
+        const dateVal = (id) => {
+            const v = document.getElementById(id).value;
+            if (!v) return "N/A";
+            const parts = v.split('-');
+            if (parts.length !== 3) return v;
+            return `${parts[2]}/${parts[1]}/${parts[0]}`;
+        };
+
+        let sigBB = "";
+        const sigType = document.querySelector('input[name="sig_type"]:checked').value;
+        
+        if (sigType === 'image') {
+            const url = document.getElementById('sig_img_url').value;
+            sigBB = url ? `[img]${url}[/img]` : "N/A";
+        } else {
+            let text = document.getElementById('sig_text_val').value || "N/A";
+            const font = document.getElementById('sig_font').value;
+            const size = document.getElementById('sig_size').value;
+            const bold = document.getElementById('sig_bold').checked;
+            const italic = document.getElementById('sig_italic').checked;
+            const underline = document.getElementById('sig_underline').checked;
+
+            if (bold) text = `[b]${text}[/b]`;
+            if (italic) text = `[i]${text}[/i]`;
+            if (underline) text = `[u]${text}[/u]`;
+            if (size) text = `[size=${size}]${text}[/size]`;
+            if (font) text = `[font=${font}]${text}[/font]`;
+            
+            sigBB = text;
+        }
+
+        const bbcode = `[divbox=white][center][img]https://i.postimg.cc/RFd9JsR5/safdjg-2020-resized-2.png[/img]
+[size=150][b][font=times new roman]SAN ANDREAS FIRE DEPARTMENT[/font][/b][/size]
+[font=times new roman]HEADQUARTERS[/font]
+[font=times new roman]CITY OF LOS SANTOS * 225 DOWNTOWN STREET COR. DOWNTOWN AVENUE * LOS SANTOS SA 55164[/font][/center]
+
+[hr][/hr]
+[center][font=times new roman]LEAVE OF ABSENCE REQUEST[/font][/center]
+[hr][/hr]
+
+[divbox=black][aligntable=right,0,0,0,0,0,transparent][img]https://i.postimg.cc/V6qpRTsK/SAFD-LOGO-MINI2.png[/img][/aligntable][size=140][b][color=white][font=times new roman]A — Employee Information[/font][/color][/b][/size][/divbox][list=none]
+
+[b][color=#bf4000]A1.[/color] Full Name:[/b] ${val('a1')}
+[b][color=#bf4000]A2.[/color] District:[/b] ${val('a2')}
+[b][color=#bf4000]A3.[/color] Position:[/b] ${val('a3')}
+[b][color=#bf4000]A4.[/color] Employee #:[/b] ${val('a4')}
+[b][color=#bf4000]A5.[/color] Department Serving:[/b] ${val('a5')}
+[/list]
+
+[hr]
+[divbox=black][aligntable=right,0,0,0,0,0,transparent][img]https://i.postimg.cc/V6qpRTsK/SAFD-LOGO-MINI2.png[/img][/aligntable][size=140][b][color=white][font=times new roman]B — Absence Details[/font][/color][/b][/size][/divbox][list=none]
+
+[b][color=#bf4000]B1.[/color] Type of Absence:[/b] ${val('b1')}
+[b][color=#bf4000]B2.[/color] Reason of Absence:[/b] ${val('b2')}
+
+[b][color=#bf4000]B3.[/color] Date of Leave:[/b] ${dateVal('b3')}
+[b][color=#bf4000]B4.[/color] Date of Return:[/b] ${dateVal('b4')}
+[b][color=#bf4000]B5.[/color] Number of Day(s) Away:[/b] ${val('b5')}
+[/list]
+
+[hr][/hr]
+[aligntable=right,0,0,0,0,0,transparent]Approval Signature: 
+[i]Pending Approval[/i]
+[b]DATE:[/b] DD/MM/YY[/aligntable]
+Employee Signature: 
+${sigBB}
+[b]DATE:[/b] ${dateVal('sig_date')}
+
+[hr]
+[divbox=black][aligntable=right,0,0,0,0,0,transparent][img]https://i.postimg.cc/V6qpRTsK/SAFD-LOGO-MINI2.png[/img][/aligntable][size=140][b][color=white](( [font=times new roman]C — Out of Character Information[/font] ))[/color][/b][/size][/divbox][list=none]
+
+[b][color=#bf4000]C1.[/color] Reason of Absence:[/b] ${val('c1')}
+
+[/divbox]`;
+
+        document.getElementById('bbcode-result').value = bbcode;
+        document.getElementById('output-container').style.display = 'block';
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+    function copyBBCode() {
+        const copyText = document.getElementById("bbcode-result");
+        copyText.select();
+        document.execCommand("copy");
+        
+        const msg = document.getElementById("copy-msg");
+        msg.style.display = "block";
+        setTimeout(() => msg.style.display = "none", 3000);
+    }
+
+    function toggleSigType() {
+        const type = document.querySelector('input[name="sig_type"]:checked').value;
+        document.getElementById('sig_text_container').style.display = type === 'text' ? 'block' : 'none';
+        document.getElementById('sig_image_container').style.display = type === 'image' ? 'block' : 'none';
+    }
+
+    // Initialize System Theme
+    applySystemTheme();
+</script>
+
+</body>
+</html>

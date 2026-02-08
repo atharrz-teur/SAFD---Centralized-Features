@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://i.postimg.cc/V6qpRTsK/SAFD-LOGO-MINI2.png">
+    <title>SAFD - Patient Care Report Generator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #d32f2f;
+            --secondary: #2c3e50;
+            --bg-body: #f0f2f5;
+            --bg-card: #ffffff;
+            --text-main: #2d3436;
+            --text-light: #636e72;
+            --border: #dfe6e9;
+            --input-bg: #ffffff;
+            --shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+
+        [data-theme="dark"] {
+            --bg-body: #121212;
+            --bg-card: #1e1e1e;
+            --text-main: #e0e0e0;
+            --text-light: #b0b0b0;
+            --border: #333333;
+            --input-bg: #2d2d2d;
+            --shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            transition: background 0.3s ease;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* Navigation */
+        .nav-bar {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            pointer-events: none;
+        }
+
+        .btn-nav {
+            padding: 10px 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+            pointer-events: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .btn-nav:hover { background: var(--primary); color: white; border-color: var(--primary); }
+
+        /* Card & Header */
+        .main-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            border-top: 8px solid var(--primary);
+            margin-top: 20px;
+        }
+
+        .header-banner {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(to bottom, rgba(211, 47, 47, 0.05), transparent);
+        }
+
+        .header-banner img { max-width: 120px; margin-bottom: 15px; }
+        .header-banner h1 { margin: 0; font-size: 1.4rem; letter-spacing: 1px; color: var(--text-main); }
+
+        /* Form Styling */
+        .form-content { padding: 40px; }
+        .form-section { margin-bottom: 40px; }
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 25px;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 10px;
+        }
+
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .full { grid-column: span 2; }
+
+        .field-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.9rem; color: var(--text-light); }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 10px;
+            border: 2px solid var(--border);
+            background: var(--input-bg);
+            color: var(--text-main);
+            font-size: 0.95rem;
+            box-sizing: border-box;
+            transition: 0.3s;
+        }
+
+        input:focus, textarea:focus { border-color: var(--primary); outline: none; }
+
+        .participant-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .btn-add {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            margin-bottom: 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .btn-add:hover { background: #34495e; }
+
+        .btn-remove {
+            background: #ff7675;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            width: 45px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-remove:hover { background: #d63031; }
+
+        /* Signature Styles */
+        .sig-card {
+            background: rgba(0,0,0,0.02);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .sig-header {
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            font-size: 0.95rem;
+            border-bottom: 1px dashed var(--border);
+            padding-bottom: 5px;
+        }
+        .sig-options {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border);
+        }
+        .sig-controls {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            font-weight: normal;
+        }
+        .checkbox-label input { width: auto; margin: 0; }
+
+        /* Buttons */
+        .btn-generate {
+            width: 100%;
+            padding: 18px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: 0.3s;
+        }
+
+        .btn-generate:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(211, 47, 47, 0.4); }
+
+        /* Output */
+        #output-area { display: none; margin-top: 30px; }
+        .output-box {
+            background: #2d3436;
+            color: #fab1a0;
+            padding: 20px;
+            border-radius: 12px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            border: 1px solid #636e72;
+        }
+
+        @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } .full { grid-column: span 1; } }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+    </style>
+</head>
+<body data-theme="system">
+
+<div class="container">
+    <div class="nav-bar">
+        <a href="../index.html" class="btn-nav"><i class="fas fa-home"></i> Back to Menu</a>
+        <button class="btn-nav" onclick="toggleTheme()" id="themeBtn"><i class="fas fa-circle-half-stroke"></i> System Theme</button>
+    </div>
+
+    <div class="main-card">
+        <div class="header-banner">
+            <img src="https://i.postimg.cc/RFd9JsR5/safdjg-2020-resized-2.png" alt="SAFD">
+            <h1>PATIENT CARE REPORT</h1>
+            <p style="color: var(--text-light); font-weight: 500;">Emergency and Operative Operations Office</p>
+        </div>
+
+        <div class="form-content">
+            <div class="form-section">
+                <div class="section-header"><i class="fas fa-user-shield"></i> A — Personal Information</div>
+                <div class="grid">
+                    <div class="field-group"><label>Full Name</label><input type="text" id="a_name" placeholder="Abertforth Zeonathaan"></div>
+                    <div class="field-group"><label>Position</label><input type="text" id="a_pos" placeholder="Cadet"></div>
+                    <div class="field-group"><label>Employee #</label><input type="text" id="a_num" placeholder="12345"></div>
+                    <div class="field-group"><label>Location of Incident</label><input type="text" id="a_loc" placeholder="Market"></div>
+                    <div class="field-group"><label>Date of Incident</label><input type="date" id="a_date"></div>
+                    <div class="field-group"><label>Time of Incident</label><input type="time" id="a_time"></div>
+                    <div class="field-group full"><label>Unit</label><input type="text" id="a_unit" placeholder="Rescue 999"></div>
+                    <div class="field-group full">
+                        <label>Crew Member(s)</label>
+                        <div id="container_crew"></div>
+                        <button type="button" class="btn-add" onclick="addParticipant('container_crew')"><i class="fas fa-plus"></i> Add Crew Member</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="section-header"><i class="fas fa-user-injured"></i> B — Victim Information</div>
+                <div class="grid">
+                    <div class="field-group"><label>Full Name</label><input type="text" id="b_name" placeholder="Dapa Ainussalam"></div>
+                    <div class="field-group"><label>Age</label><input type="text" id="b_age" placeholder="25"></div>
+                    <div class="field-group full"><label>Injuries</label><input type="text" id="b_injuries" placeholder="Laceration on right arm..."></div>
+                    
+                    <div class="field-group full">
+                        <label>Vitals</label>
+                        <div class="grid">
+                            <input type="text" id="b_pulse" placeholder="Pulse (e.g. 80 bpm)">
+                            <input type="text" id="b_airway" placeholder="Airway (e.g. Clear)">
+                            <input type="text" id="b_breathing" placeholder="Breathing (e.g. 12 lpm)">
+                            <input type="text" id="b_apvu" placeholder="APVU (e.g. Alert)">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="section-header"><i class="fas fa-file-medical-alt"></i> C — Incident Details</div>
+                <div class="field-group full">
+                    <label>Details</label>
+                    <textarea id="c_details" rows="6" placeholder="Describe the incident and treatment..."></textarea>
+                </div>
+                <div class="field-group full">
+                    <label>Images (Screenshots)</label>
+                    <div id="container_images"></div>
+                    <button type="button" class="btn-add" onclick="addParticipant('container_images', 'Image URL')"><i class="fas fa-plus"></i> Add Image URL</button>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="section-header"><i class="fas fa-signature"></i> D. Signature</div>
+                <div class="sig-card" id="sig_card">
+                    <div class="sig-header">Employee Signature</div>
+                    <div class="sig-options">
+                        <div style="display:flex; gap:20px; margin-bottom:10px;">
+                            <label class="checkbox-label"><input type="radio" name="sig_type" value="text" checked onchange="toggleSigType(this)"> Text Signature</label>
+                            <label class="checkbox-label"><input type="radio" name="sig_type" value="image" onchange="toggleSigType(this)"> Image Signature</label>
+                        </div>
+                        <div class="sig-text-panel">
+                            <input type="text" class="s-text-val" placeholder="Signature Text (e.g. Name)">
+                            <div class="sig-controls">
+                                <label class="checkbox-label"><input type="checkbox" class="s-bold"> Bold</label>
+                                <label class="checkbox-label"><input type="checkbox" class="s-italic"> Italic</label>
+                                <label class="checkbox-label"><input type="checkbox" class="s-under"> Underline</label>
+                                <select class="s-font" style="width:auto;"><option value="">Default Font</option><option value="Arial">Arial</option><option value="Courier New">Courier New</option><option value="Times New Roman">Times New Roman</option><option value="Verdana">Verdana</option><option value="Impact">Impact</option></select>
+                                <select class="s-size" style="width:auto;"><option value="">Normal Size</option><option value="50">Tiny</option><option value="85">Small</option><option value="150">Large</option><option value="200">Huge</option></select>
+                            </div>
+                        </div>
+                        <div class="sig-img-panel" style="display:none;">
+                            <input type="text" class="s-img-url" placeholder="Image URL (https://...)">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-generate" onclick="generateBBCode()">
+                <i class="fas fa-code"></i> GENERATE BBCODE
+            </button>
+
+            <div id="output-area">
+                <div class="section-header" style="margin-top:40px;">Result</div>
+                <textarea class="output-box" id="resultBB" readonly onclick="this.select()"></textarea>
+                <button class="btn-generate" style="background:#2ecc71; margin-top:10px;" onclick="copyCode()">
+                    <i class="fas fa-copy"></i> Copy to Clipboard
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        &copy; 2026 <strong>San Andreas Fire Department</strong> • North Bureau<br>
+        Developed by Abertforth Zeonathaan - Athar
+    </div>
+</div>
+
+<script>
+    // Theme Switcher
+    const themes = ['system', 'light', 'dark'];
+    let themeIdx = 0;
+
+    function toggleTheme() {
+        themeIdx = (themeIdx + 1) % themes.length;
+        const theme = themes[themeIdx];
+        document.body.setAttribute('data-theme', theme);
+        const btn = document.getElementById('themeBtn');
+        
+        if(theme === 'system') {
+            btn.innerHTML = '<i class="fas fa-circle-half-stroke"></i> System Theme';
+            applySystemTheme();
+        } else {
+            btn.innerHTML = theme === 'dark' ? '<i class="fas fa-moon"></i> Dark Mode' : '<i class="fas fa-sun"></i> Light Mode';
+        }
+    }
+
+    function applySystemTheme() {
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.body.setAttribute('data-theme', 'dark');
+        } else {
+            document.body.setAttribute('data-theme', 'light');
+        }
+    }
+    applySystemTheme();
+
+    // Dynamic Lists
+    function addParticipant(containerId, placeholder = "Name") {
+        const container = document.getElementById(containerId);
+        const div = document.createElement('div');
+        div.className = 'participant-row';
+        
+        const isFirst = container.children.length === 0;
+        const removeBtn = isFirst ? '' : `<button type="button" class="btn-remove" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button>`;
+        
+        div.innerHTML = `
+            <input type="text" class="p-input" placeholder="${placeholder}">
+            ${removeBtn}
+        `;
+        container.appendChild(div);
+    }
+
+    addParticipant('container_crew', 'Crew Member Name');
+    addParticipant('container_images', 'Image URL');
+
+    // Toggle Signature Type
+    function toggleSigType(radio) {
+        const card = radio.closest('.sig-card');
+        const textPanel = card.querySelector('.sig-text-panel');
+        const imgPanel = card.querySelector('.sig-img-panel');
+        if (radio.value === 'image') {
+            textPanel.style.display = 'none';
+            imgPanel.style.display = 'block';
+        } else {
+            textPanel.style.display = 'block';
+            imgPanel.style.display = 'none';
+        }
+    }
+
+    function getList(containerId) {
+        const inputs = document.querySelectorAll(`#${containerId} .p-input`);
+        const values = Array.from(inputs).map(i => i.value.trim()).filter(v => v !== "");
+        if (values.length === 0) return "[*]";
+        return values.map(v => `[*]${v}`).join('\n');
+    }
+
+    function getImages(containerId) {
+        const inputs = document.querySelectorAll(`#${containerId} .p-input`);
+        const values = Array.from(inputs).map(i => i.value.trim()).filter(v => v !== "");
+        if (values.length === 0) return "N/A";
+        return values.map(v => `[img]${v}[/img]`).join('\n');
+    }
+
+    function getSignatureBB(cardId) {
+        const card = document.getElementById(cardId);
+        const type = card.querySelector('input[name="sig_type"]:checked').value;
+        if (type === 'image') {
+            const url = card.querySelector('.s-img-url').value;
+            return url ? `[img]${url}[/img]` : "Pending Signation";
+        } else {
+            let text = card.querySelector('.s-text-val').value || "Pending Signation";
+            if (card.querySelector('.s-bold').checked) text = `[b]${text}[/b]`;
+            if (card.querySelector('.s-italic').checked) text = `[i]${text}[/i]`;
+            if (card.querySelector('.s-under').checked) text = `[u]${text}[/u]`;
+            const font = card.querySelector('.s-font').value;
+            const size = card.querySelector('.s-size').value;
+            if (size) text = `[size=${size}]${text}[/size]`;
+            if (font) text = `[font=${font}]${text}[/font]`;
+            return text;
+        }
+    }
+
+    function generateBBCode() {
+        const val = (id) => document.getElementById(id).value || "(Answer here)";
+        const dateVal = (id) => {
+            const v = document.getElementById(id).value;
+            if (!v) return "(Answer here)";
+            const parts = v.split('-');
+            return `${parts[2]}/${parts[1]}/${parts[0]}`;
+        };
+
+        const sigBB = getSignatureBB('sig_card');
+
+        const bb = `[divbox=white]
+[center][img]https://i.postimg.cc/RFd9JsR5/safdjg-2020-resized-2.png[/img]
+[size=150][b][font=times new roman]SAN ANDREAS FIRE DEPARTMENT[/font][/b][/size]
+[font=times new roman]EMERGENCY AND OPERATIVE OPERATIONS OFFICE[/font] - [font=times new roman]FIELD RECORDS[/font]
+[font=times new roman]CITY OF LOS SANTOS * 271 AIRPORT PERIMETER WAY* LOS SANTOS SA 52527[/font][/center]
+[hr][/hr]
+[center][size=140][b][font=times new roman]PATIENT CARE REPORT[/font][/b][/size][/center]
+[hr][/hr]
+[divbox=black][aligntable=right,0,0,0,0,0,transparent][img]https://i.postimg.cc/V6qpRTsK/SAFD-LOGO-MINI2.png[/img][/aligntable][size=140][b][color=white][font=times new roman]A — Personal Information[/font][/color][/b][/size][/divbox][list=none]
+
+[b][color=#bf4000]A1.[/color] Full Name:[/b] ${val('a_name')}
+[b][color=#bf4000]A2.[/color] Position:[/b] ${val('a_pos')}
+[b][color=#bf4000]A3.[/color] Employee #:[/b] ${val('a_num')}
+[b][color=#bf4000]A4.[/color] Location of Incident:[/b] ${val('a_loc')}
+[b][color=#bf4000]A5.[/color] Date of Incident:[/b] ${dateVal('a_date')}
+[b][color=#bf4000]A6.[/color] Time of Incident:[/b] ${val('a_time')}
+
+[b][color=#bf4000]A7.[/color] Unit:[/b] ${val('a_unit')}
+[b][color=#bf4000]A8.[/color] Crew Member:[/b] [list]
+${getList('container_crew')}
+[/list]
+[/list]
+[size=1].[/size]
+[divbox=black][aligntable=right,0,0,0,0,0,transparent][img]https://i.postimg.cc/V6qpRTsK/SAFD-LOGO-MINI2.png[/img][/aligntable][size=140][b][color=white][font=times new roman]B — Victim Information[/font][/color][/b][/size][/divbox][list=none]
+
+[b][color=#bf4000]B1.[/color] Full Name:[/b] ${val('b_name')}
+[b][color=#bf4000]B2.[/color] Age:[/b] ${val('b_age')}
+
+[b][color=#bf4000]B3.[/color] Injuries:[/b] ${val('b_injuries')}
+[b][color=#bf4000]B4.[/color] Vitals[/b]
+[list][*][b][size=90]Pulse:[/b] ${val('b_pulse')}[/size]
+[*][b][size=90]Airway:[/b] ${val('b_airway')}[/size]
+[*][b][size=90]Breathing:[/b] ${val('b_breathing')}[/size]
+[*][b][size=90]APVU:[/b] ${val('b_apvu')}[/size][/list]
+
+[/list]
+[size=1].[/size]
+[divbox=black][aligntable=right,0,0,0,0,0,transparent][img]https://i.postimg.cc/V6qpRTsK/SAFD-LOGO-MINI2.png[/img][/aligntable][size=140][b][color=white][font=times new roman]C — Incident Details[/font][/color][/b][/size][/divbox][list=none]
+
+[quote][justify]
+${val('c_details')}
+[/justify][/quote]
+
+b)[/b]
+[spoiler]${getImages('container_images')}[/spoiler]
+
+[/list]
+[hr][/hr]
+[aligntable=right,0,0,0,0,0,transparent]
+[b]FIRE OFFICER SIGNATURE[/b]
+
+
+_____________________
+
+[/aligntable]
+[b]EMPLOYEE SIGNATURE[/b]
+
+${sigBB}
+______________________
+${val('a_name')}
+[space][/space]
+[/divbox]`;
+
+        document.getElementById('resultBB').value = bb;
+        document.getElementById('output-area').style.display = 'block';
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+    function copyCode() {
+        const copyText = document.getElementById("resultBB");
+        copyText.select();
+        document.execCommand("copy");
+        alert("BBCode copied to clipboard!");
+    }
+</script>
+
+</body>
+</html>
