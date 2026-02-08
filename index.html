@@ -345,7 +345,7 @@
                 </div>
             </div>
 
-            <div class="category-pod" onclick="openPod(this)">
+            <div class="category-pod" onclick="confirmAccess(this, 'HCI')">
                 <div class="pod-icon" style="background: none;">
                     <img src="main/img/HCI.png" alt="FM Logo" style="width: 70px; height: 70px; object-fit: contain;">
                 </div>
@@ -561,6 +561,13 @@
                 confirmText: "Saya Anggota SFO",
                 cancelText: "Saya Bukan Anggota SFO",
                 errorText: "KAMU BUKAN ANGGOTA SFO"
+            },
+            'HCI': {
+                pass: "c2FmZGhjaQ==",
+                desc: "Maaf hanya anggota HCI yang membuka section ini!!!",
+                confirmText: "Saya Anggota HCI",
+                cancelText: "Saya Bukan Anggota HCI",
+                errorText: "KAMU BUKAN ANGGOTA HCI"
             }
         };
 
