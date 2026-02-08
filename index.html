@@ -322,9 +322,9 @@
                     <p style="font-size: 0.8rem;">Hospital Report Assistant</p>
                 </div>
                 <div class="tools-grid">
-                    <a href="main/surgeryreport.html" class="tool-card" style="animation-delay: 0.1s"><strong>Surgery Report</strong><span>Form BBCode Gen</span></a>
+                    <a href="main/surgeryreport.html" class="tool-card" style="animation-delay: 0.1s"><strong>Surgery Report</strong><span>Report BBCode Gen</span></a>
                     <a href="main/dermatologybbcodegen.html" class="tool-card" style="animation-delay: 0.2s"><strong>Dermatology Case</strong><span>Report BBCode Gen</span></a>
-                    <a href="main/prescriptionbbcodegen.html" class="tool-card" style="animation-delay: 0.3s"><strong>Prescription</strong><span>Form BBCode Gen</span></a>
+                    <a href="main/prescriptionbbcodegen.html" class="tool-card" style="animation-delay: 0.3s"><strong>Prescription</strong><span>Report BBCode Gen</span></a>
                     <a href="main/patientrecordbbcodegen.html" class="tool-card" style="animation-delay: 0.4s"><strong>Patient Record</strong><span>Form BBCode Gen</span></a>
                     <a href="main/laboratorycasereport1.html" class="tool-card" style="animation-delay: 0.5s"><strong>Laboratory Case</strong><span>Report BBCode Gen</span></a>
                     <a href="main/laboratorycasereport2.html" class="tool-card" style="animation-delay: 0.6s"><strong>Laboratory Drug Test</strong><span>Report BBCode Gen</span></a>
@@ -359,7 +359,24 @@
                 </div>
             </div>
 
-            <div class="category-pod" onclick="confirmFM(this)">
+            <div class="category-pod" onclick="confirmAccess(this, 'SFO')">
+                <div class="pod-icon" style="background: none;">
+                    <img src="main/img/SFO.png" alt="FM Logo" style="width: 70px; height: 70px; object-fit: contain;">
+                </div>
+                <div class="pod-info">
+                    <h2>(Sub) - Fire Officer Tools</h2>
+                    <p style="font-size: 0.8rem;">SFO+ Assistant</p>
+                </div>
+                <div class="tools-grid">
+                    <a href="main/blsbbcodegen.html" class="tool-card" style="animation-delay: 0.1s"><strong>Basic Life Support Demonstrasion</strong><span>Report BBCode Gen</span></a>
+                    <a href="main/ilsbbcodegen.html" class="tool-card" style="animation-delay: 0.2s"><strong>Intermediate Life Support Demonstrasion</strong><span>Report BBCode Gen</span></a>
+                    <a href="main/alsbbcodegen.html" class="tool-card" style="animation-delay: 0.2s"><strong>Advanced Life Support Demonstrasion</strong><span>Report BBCode Gen</span></a>
+                    <a href="main/spvbbcodegen.html" class="tool-card" style="animation-delay: 0.2s"><strong>Hospital Supervisors</strong><span>Report BBCode Gen</span></a>
+                    <a href="main/spvfbbcodegen.html" class="tool-card" style="animation-delay: 0.2s"><strong>Field Supervisors</strong><span>Report BBCode Gen</span></a>
+                </div>
+            </div>
+
+            <div class="category-pod" onclick="confirmAccess(this, 'FM')">
                 <button class="fm-info-btn" onclick="showFMInfo(event)">!</button>
                 <div class="pod-icon" style="background: none;">
                     <img src="main/img/FM.png" alt="FM Logo" style="width: 70px; height: 70px; object-fit: contain;">
@@ -387,26 +404,26 @@
         <button class="btn-back" id="backBtn" onclick="closeAll(event)">Back to Menu</button>
     </div>
 
-    <div id="fm-warning-modal" class="modal-overlay">
+    <div id="access-warning-modal" class="modal-overlay">
         <div class="modal-content">
             <h2 style="color: #ff4757; margin-bottom: 15px; font-size: 1.8rem;">⚠️ RESTRICTED AREA</h2>
-            <p style="font-size: 1.1rem; margin-bottom: 15px;">Mohon hanya anggota FM yang membuka section ini!!!</p>
+            <p id="modal-desc" style="font-size: 1.1rem; margin-bottom: 15px;">Mohon hanya anggota FM yang membuka section ini!!!</p>
             <p style="font-size: 0.9rem; color: #ccc; line-height: 1.5;"></p>
             
-            <div id="fm-initial-controls" class="modal-buttons">
-                <button class="btn-confirm" onclick="showInputFM()">Saya Anggota FM</button>
-                <button class="btn-cancel" onclick="closeModal()">Saya Bukan Anggota FM</button>
+            <div id="access-initial-controls" class="modal-buttons">
+                <button id="btn-confirm-access" class="btn-confirm" onclick="showInputAccess()">Saya Anggota FM</button>
+                <button id="btn-cancel-access" class="btn-cancel" onclick="closeModal()">Saya Bukan Anggota FM</button>
             </div>
 
-            <div id="fm-verify-controls" style="display: none; flex-direction: column; gap: 15px; margin-top: 20px;">
+            <div id="access-verify-controls" style="display: none; flex-direction: column; gap: 15px; margin-top: 20px;">
                 <div class="password-container">
-                    <input type="password" id="fm-username" placeholder="Enter Password" onkeydown="if(event.key === 'Enter') validateFM()" style="width: 100%; padding: 12px 40px 12px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: white; text-align: center; font-size: 1rem; outline: none;">
+                    <input type="password" id="access-password" placeholder="Enter Password" onkeydown="if(event.key === 'Enter') validateAccess()" style="width: 100%; padding: 12px 40px 12px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: white; text-align: center; font-size: 1rem; outline: none;">
                     <i class="fas fa-eye password-toggle" onclick="togglePassword()"></i>
                 </div>
-                <button class="btn-confirm" onclick="validateFM()">Masuk</button>
+                <button class="btn-confirm" onclick="validateAccess()">Masuk</button>
             </div>
 
-            <div id="fm-error-msg" style="display: none; color: #ff4757; font-weight: 800; margin-top: 20px; font-size: 1.4rem; animation: shake 0.4s ease-in-out;">
+            <div id="access-error-msg" style="display: none; color: #ff4757; font-weight: 800; margin-top: 20px; font-size: 1.4rem; animation: shake 0.4s ease-in-out;">
                 KAMU BUKAN ANGGOTA FM
             </div>
         </div>
@@ -416,7 +433,7 @@
         <div class="modal-content" style="text-align: left; max-width: 600px;">
             <h3 style="color: #00d2ff; margin-bottom: 20px; text-align: center; font-size: 1.5rem;">IMPORTANT INFORMATION</h3>
             <ol style="line-height: 1.6; margin-bottom: 25px; padding-left: 20px; font-size: 1rem;">
-                <li style="margin-bottom: 10px;">Jangan membuka kalkulator weekly bonus hospital lain karena akan berpengaruh pada localstorage kalian masing masing.</li>
+                <li style="margin-bottom: 10px;">Jangan membuka kalkulator hospital lain karena akan berpengaruh pada localstorage kalian masing masing.</li>
                 <li style="margin-bottom: 10px;">Semoga dengan adanya website ini akan membantu personil SAFD dan meningkatkan performa kerja.</li>
                 <li>Kalo ada pertanyaan jangan sungkan untuk bertanya di grup yeahhh gesss.</li>
             </ol>
@@ -529,30 +546,55 @@
         }
 
         let pendingPod = null;
-        const encryptedPass = "Zm1nYWNvcg==";
+        let currentAccessType = '';
+        const accessConfig = {
+            'FM': {
+                pass: "Zm1nYWNvcg==", 
+                desc: "Maaf hanya anggota FM yang membuka section ini!!!",
+                confirmText: "Saya Anggota FM",
+                cancelText: "Saya Bukan Anggota FM",
+                errorText: "KAMU BUKAN ANGGOTA FM"
+            },
+            'SFO': {
+                pass: "c2ZvZ2F1bA==",
+                desc: "Maaf hanya anggota SFO yang membuka section ini!!!",
+                confirmText: "Saya Anggota SFO",
+                cancelText: "Saya Bukan Anggota SFO",
+                errorText: "KAMU BUKAN ANGGOTA SFO"
+            }
+        };
 
-        function confirmFM(element) {
+        function confirmAccess(element, type) {
             if(element.classList.contains('active')) return;
             pendingPod = element;
-            document.getElementById('fm-warning-modal').classList.add('show');
+            currentAccessType = type;
+            
+            const config = accessConfig[type];
+            document.getElementById('modal-desc').innerText = config.desc;
+            document.getElementById('btn-confirm-access').innerText = config.confirmText;
+            document.getElementById('btn-cancel-access').innerText = config.cancelText;
+            document.getElementById('access-error-msg').innerText = config.errorText;
+            
+            document.getElementById('access-warning-modal').classList.add('show');
         }
 
-        function showInputFM() {
-            document.getElementById('fm-initial-controls').style.display = 'none';
-            document.getElementById('fm-verify-controls').style.display = 'flex';
-            document.getElementById('fm-username').focus();
+        function showInputAccess() {
+            document.getElementById('access-initial-controls').style.display = 'none';
+            document.getElementById('access-verify-controls').style.display = 'flex';
+            document.getElementById('access-password').focus();
         }
 
-        function validateFM() {
-            const inputName = document.getElementById('fm-username').value.trim();
-            const isValid = btoa(inputName) === encryptedPass;
+        function validateAccess() {
+            const inputPass = document.getElementById('access-password').value.trim();
+            const config = accessConfig[currentAccessType];
+            const isValid = btoa(inputPass) === config.pass;
 
             if (isValid) {
                 if(pendingPod) openPod(pendingPod);
                 closeModal();
             } else {
-                document.getElementById('fm-verify-controls').style.display = 'none';
-                document.getElementById('fm-error-msg').style.display = 'block';
+                document.getElementById('access-verify-controls').style.display = 'none';
+                document.getElementById('access-error-msg').style.display = 'block';
                 setTimeout(() => {
                     closeModal();
                 }, 2000);
@@ -560,7 +602,7 @@
         }
 
         function togglePassword() {
-            const input = document.getElementById('fm-username');
+            const input = document.getElementById('access-password');
             const icon = document.querySelector('.password-toggle');
             if (input.type === "password") {
                 input.type = "text";
@@ -574,9 +616,9 @@
         }
 
         function closeModal() {
-            document.getElementById('fm-warning-modal').classList.remove('show');
+            document.getElementById('access-warning-modal').classList.remove('show');
             pendingPod = null;
-            setTimeout(resetFMModal, 300);
+            setTimeout(resetAccessModal, 300);
         }
 
         function showFMInfo(event) {
@@ -609,11 +651,11 @@
             document.getElementById('fm-info-modal').classList.remove('show');
         }
 
-        function resetFMModal() {
-            document.getElementById('fm-initial-controls').style.display = 'flex';
-            document.getElementById('fm-verify-controls').style.display = 'none';
-            document.getElementById('fm-error-msg').style.display = 'none';
-            document.getElementById('fm-username').value = '';
+        function resetAccessModal() {
+            document.getElementById('access-initial-controls').style.display = 'flex';
+            document.getElementById('access-verify-controls').style.display = 'none';
+            document.getElementById('access-error-msg').style.display = 'none';
+            document.getElementById('access-password').value = '';
         }
 
         document.getElementById('bodyMain').onclick = function(e) {
@@ -621,5 +663,4 @@
         }
     </script>
 </body>
-
 </html>
