@@ -92,6 +92,26 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
+        .changelog-btn {
+            position: fixed;
+            top: 20px;
+            right: 75px;
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            color: var(--text-color);
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
         .clock-widget {
             position: fixed;
             top: 20px;
@@ -424,9 +444,41 @@
         }
         .category-pod.active .unlock-badge { display: none; }
         @keyframes scrollLogos { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+        .section-event-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 20;
+            transition: 0.3s;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        .section-event-btn:hover {
+            background: var(--primary);
+            transform: scale(1.1);
+            box-shadow: 0 0 15px var(--primary);
+        }
+        .category-pod.active .section-event-btn {
+            display: flex;
+        }
     </style>
 </head>
 <body id="bodyMain">
+
+    <button class="changelog-btn" onclick="openChangelog()" title="View Changelog">
+        <i class="fas fa-history"></i>
+    </button>
 
     <button class="theme-switcher" id="themeBtn" onclick="toggleTheme()" title="Switch Theme">
         🌙
@@ -491,6 +543,7 @@
 
             <div class="category-pod" onclick="confirmAccess(this, 'FO')">
                 <div class="lock-badge"><i class="fas fa-lock"></i></div>
+                <button class="section-event-btn" onclick="showSectionEvent(event, 'FO')" title="Section Updates"><i class="fas fa-bullhorn"></i></button>
                 <div class="pod-icon" style="background: none;">
                     <img src="main/img/FO.png" alt="FO Logo" style="width: 70px; height: auto; object-fit: contain;">
                 </div>
@@ -506,6 +559,7 @@
 
             <div class="category-pod" onclick="confirmAccess(this, 'HCI')">
                 <div class="lock-badge"><i class="fas fa-lock"></i></div>
+                <button class="section-event-btn" onclick="showSectionEvent(event, 'HCI')" title="Section Updates"><i class="fas fa-bullhorn"></i></button>
                 <div class="pod-icon" style="background: none;">
                     <img src="main/img/HCI.png" alt="HCI Logo" style="width: 70px; height: auto; object-fit: contain;">
                 </div>
@@ -521,6 +575,7 @@
 
             <div class="category-pod" onclick="confirmAccess(this, 'SFO')">
                 <div class="lock-badge"><i class="fas fa-lock"></i></div>
+                <button class="section-event-btn" onclick="showSectionEvent(event, 'SFO')" title="Section Updates"><i class="fas fa-bullhorn"></i></button>
                 <div class="pod-icon" style="background: none;">
                     <img src="main/img/SFO.png" alt="SFO Logo" style="width: 70px; height: auto; object-fit: contain;">
                 </div>
@@ -539,6 +594,7 @@
 
             <div class="category-pod" onclick="confirmAccess(this, 'FM')">
                 <div class="lock-badge"><i class="fas fa-lock"></i></div>
+                <button class="section-event-btn" onclick="showSectionEvent(event, 'FM')" title="Section Updates" style="right: 75px;"><i class="fas fa-bullhorn"></i></button>
                 <button class="fm-info-btn" onclick="showFMInfo(event)">!</button>
                 <div class="pod-icon" style="background: none;">
                     <img src="main/img/FM.png" alt="FM Logo" style="width: 70px; height: auto; object-fit: contain;">
@@ -596,6 +652,33 @@
 
             <div id="access-error-msg" style="display: none; color: #ff4757; font-weight: 800; margin-top: 20px; font-size: 1.4rem; animation: shake 0.4s ease-in-out;">
                 KAMU BUKAN ANGGOTA FM
+            </div>
+        </div>
+    </div>
+
+    <div id="changelog-modal" class="modal-overlay">
+        <div class="modal-content" style="text-align: left; width: 800px; height: 400px; display: flex; flex-direction: column;">
+            <h3 style="color: var(--primary); margin-bottom: 20px; text-align: center; font-size: 1.5rem;">WEBSITE CHANGELOG</h3>
+            
+            <div id="changelog-container" style="flex: 1; overflow-y: auto; padding-right: 10px;">
+                <!-- Content injected by JS -->
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
+                <button id="btn-prev-log" class="btn-cancel" onclick="changeLogPage(-1)" style="padding: 8px 15px; font-size: 0.9rem; visibility: hidden;">&lt; Prev</button>
+                <button class="btn-confirm" onclick="closeChangelog()">Close</button>
+                <button id="btn-next-log" class="btn-cancel" onclick="changeLogPage(1)" style="padding: 8px 15px; font-size: 0.9rem; visibility: hidden;">Next &gt;</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="section-event-modal" class="modal-overlay">
+        <div class="modal-content" style="text-align: left; max-width: 500px;">
+            <h3 id="event-modal-title" style="color: var(--primary); margin-bottom: 15px; text-align: center;">SECTION UPDATES</h3>
+            <ul id="event-modal-list" style="line-height: 1.6; padding-left: 20px; color: var(--text-color); font-size: 0.95rem;">
+            </ul>
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="btn-confirm" onclick="closeSectionEvent()">Close</button>
             </div>
         </div>
     </div>
@@ -955,6 +1038,93 @@
 
         function closeFMInfo() {
             document.getElementById('fm-info-modal').classList.remove('show');
+        }
+
+        const sectionUpdates = {
+            'FO': ['Module is currently under development.'],
+            'HCI': ['N/A'],
+            'SFO': ['Updated BLS/ILS/ALS Assessment Generators UI.'],
+            'FM': ['Updated Roster Weekly Calculators for FCH, ASGH, CGH.']
+        };
+
+        function showSectionEvent(event, type) {
+            event.stopPropagation();
+            const modal = document.getElementById('section-event-modal');
+            const list = document.getElementById('event-modal-list');
+            const title = document.getElementById('event-modal-title');
+            
+            const names = {'FO': 'Fire Officer', 'HCI': 'Healthcare & Insurance', 'SFO': 'Sub-Fire Officer', 'FM': 'Financial Management'};
+            title.innerText = `${names[type]} Updates`;
+
+            list.innerHTML = '';
+            const updates = sectionUpdates[type] || ['No recent updates.'];
+            updates.forEach(item => {
+                const li = document.createElement('li');
+                li.innerText = item;
+                li.style.marginBottom = '10px';
+                list.appendChild(li);
+            });
+
+            modal.classList.add('show');
+        }
+
+        function closeSectionEvent() {
+            document.getElementById('section-event-modal').classList.remove('show');
+        }
+
+        const changelogData = [
+            {
+                version: "Version 0.0.1 a",
+                date: "February 7th, 2026",
+                items: [
+                    "Initial release of centralized features."
+                ]
+            },
+            {
+                version: "Version 0.0.1 r",
+                date: "February 8th, 2026",
+                items: [
+                    "Added Fire Officer Section",
+                    "Added Event Announcement for Locked Section",
+                    "Updated UI for some Generator"
+                ]
+            }
+        ];
+
+        let currentLogPage = changelogData.length - 1;
+
+        function openChangelog() {
+            document.getElementById('changelog-modal').classList.add('show');
+            renderChangelog();
+        }
+
+        function renderChangelog() {
+            const container = document.getElementById('changelog-container');
+            const log = changelogData[currentLogPage];
+            
+            let html = `
+                <div class="changelog-entry" style="margin-bottom: 10px; padding-bottom: 5px;">
+                    <h4 style="color: var(--secondary); margin-bottom: 5px;">${log.version}</h4>
+                    <p style="font-size: 0.8rem; color: var(--sub-text); margin-bottom: 10px;">${log.date}</p>
+                    <ul style="padding-left: 20px; line-height: 1.6; font-size: 0.95rem;">
+                        ${log.items.map(item => `<li>${item}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+            
+            container.innerHTML = html;
+            
+            document.getElementById('btn-prev-log').style.visibility = currentLogPage > 0 ? 'visible' : 'hidden';
+            document.getElementById('btn-next-log').style.visibility = currentLogPage < changelogData.length - 1 ? 'visible' : 'hidden';
+        }
+
+        function changeLogPage(direction) {
+            currentLogPage += direction;
+            renderChangelog();
+        }
+
+        function closeChangelog() {
+            document.getElementById('changelog-modal').classList.remove('show');
         }
 
         function resetAccessModal() {
