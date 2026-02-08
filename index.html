@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="https://i.postimg.cc/V6qpRTsK/SAFD-LOGO-MINI2.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAFD - Centralized Features</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #00d2ff;
+            --bg-dark: #060b28;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --text-color: white;
+            --sub-text: #888;
+            --bg-gradient: linear-gradient(125deg, #060b28, #0a1535, #1a0b2e, #2d0b1e, #060b28);
+        }
+
+        [data-theme="light"] {
+            --bg-dark: #f0f2f5;
+            --card-bg: rgba(0, 0, 0, 0.05);
+            --text-color: #ffe6e6;
+            --text-outline: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
+            --sub-text: #555;
+            --bg-gradient: linear-gradient(125deg, #e0eafc, #cfdef3, #e8f5e9, #f0f2f5);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Segoe UI', sans-serif; transition: background 0.3s, color 0.3s; }
+
+        body {
+            background: var(--bg-gradient);
+            background-size: 400% 400%;
+            animation: gradientBG 20s ease infinite, fadeInPage 1.5s ease-out;
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes fadeInPage {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes icon-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 210, 255, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(0, 210, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 210, 255, 0); }
+        }
+
+        .fade-out {
+            opacity: 0 !important;
+            max-height: 0 !important;
+            margin: 0 !important;
+            overflow: hidden;
+        }
+
+       .theme-switcher {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            color: var(--text-color);
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .clock-widget {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 10px 20px;
+            border-radius: 50px;
+            color: var(--text-color);
+            backdrop-filter: blur(10px);
+            z-index: 1001;
+            font-size: 1.2rem;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .external-link {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: var(--primary);
+            color: #060b28;
+            padding: 12px 20px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 15px rgba(0, 210, 255, 0.3);
+            z-index: 1001;
+            transition: 0.3s;
+        }
+        .external-link:hover { transform: scale(1.05); }
+
+        .container { width: 100%; max-width: 1100px; padding: 20px; text-align: center; }
+
+        .header-section { 
+            margin-bottom: 50px; 
+            transition: 0.5s; 
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+
+        .header-section.hide { opacity: 0; transform: translateY(-20px); pointer-events: none; height: 0; margin: 0; }
+        
+        #greeting { 
+            font-size: 2.2rem; 
+            font-weight: bold; 
+            background: linear-gradient(to right, #d8b4fe, #818cf8); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            transition: all 1s ease;
+            max-height: 100px;
+        }
+
+        #welcome-msg {
+            margin-top: 10px;
+            color: var(--sub-text);
+            font-size: 1rem;
+            letter-spacing: 0.5px;
+            transition: all 1s ease;
+            max-height: 100px;
+        }
+
+        .categories-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; width: 100%; }
+
+        .category-pod {
+            width: 100%; max-width: 500px;
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 25px 30px; border-radius: 20px;
+            cursor: pointer; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex; align-items: center; gap: 20px;
+            flex-wrap: wrap; backdrop-filter: blur(15px); position: relative;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .category-pod::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: 0.5s;
+        }
+
+        .category-pod:hover { background: rgba(255, 255, 255, 0.1); transform: translateY(-5px) scale(1.02); border-color: var(--primary); box-shadow: 0 15px 30px rgba(0, 210, 255, 0.15); }
+        .category-pod:hover::before { left: 100%; }
+        
+        .pod-icon { width: 60px; height: 60px; background: rgba(0, 210, 255, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; animation: icon-pulse 2s infinite; }
+        .pod-info { text-align: left; }
+        .pod-info h2 { font-size: 1.4rem; letter-spacing: 1px; color: var(--text-color); }
+        .pod-info p { color: var(--sub-text); }
+
+        .tools-grid { display: none; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; width: 100%; margin-top: 30px; }
+        
+        .category-pod.active { max-width: 100%; border-radius: 30px; background: rgba(0, 210, 255, 0.05); cursor: default; padding: 40px; align-content: flex-start; }
+        .category-pod.active .tools-grid { display: grid; flex-basis: 100%; }
+        .category-pod.active:hover { transform: none; box-shadow: none; }
+        .category-pod.hidden { display: none; }
+
+        .tool-card { background: rgba(255, 255, 255, 0.05); padding: 25px; border-radius: 20px; text-decoration: none; color: var(--text-color); border: 1px solid rgba(255, 255, 255, 0.05); transition: 0.3s; display: flex; flex-direction: column; gap: 8px; animation: fadeInOut 0.6s ease backwards; }
+        .tool-card:hover { background: var(--primary); color: #060b28; transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0, 210, 255, 0.3); }
+        .tool-card strong { font-size: 1.1rem; }
+        .tool-card span { font-size: 0.7rem; opacity: 0.7; }
+
+        @keyframes fadeInOut { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+
+        .btn-back { 
+            display: none; 
+            position: fixed; 
+            bottom: 30px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            background: var(--primary); 
+            color: #060b28; 
+            padding: 12px 30px; 
+            border-radius: 50px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            z-index: 100; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5); 
+            border: none; 
+        }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px);
+            display: none; justify-content: center; align-items: center; z-index: 2000;
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .modal-overlay.show { display: flex; opacity: 1; }
+        .modal-content {
+            background: #1a0b2e; border: 1px solid rgba(255, 71, 87, 0.3);
+            padding: 30px; border-radius: 20px; max-width: 450px; text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5); transform: scale(0.8); transition: transform 0.3s;
+        }
+        .modal-overlay.show .modal-content { transform: scale(1); }
+        .modal-buttons { display: flex; gap: 15px; margin-top: 25px; justify-content: center; }
+        .btn-confirm { background: #ff4757; color: white; padding: 12px 25px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-confirm:hover { background: #ff6b81; transform: translateY(-2px); }
+        .btn-cancel { background: rgba(255,255,255,0.1); color: white; padding: 12px 25px; border: none; border-radius: 12px; cursor: pointer; transition: 0.3s; }
+        .btn-cancel:hover { background: rgba(255,255,255,0.2); }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); }
+        }
+
+        .password-container {
+            position: relative;
+            width: 100%;
+        }
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: rgba(255,255,255,0.5);
+            transition: 0.3s;
+        }
+        .password-toggle:hover { color: white; }
+
+        .fm-info-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #ff4757;
+            color: white;
+            border: none;
+            font-weight: bold;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 10px #ff4757;
+            animation: pulse 1.5s infinite;
+            z-index: 10;
+        }
+        .category-pod.active .fm-info-btn { display: flex; }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 71, 87, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(255, 71, 87, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 71, 87, 0); }
+        }
+
+        .whatsapp-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            z-index: 1001;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s;
+            overflow: hidden;
+        }
+        .whatsapp-btn:hover { transform: scale(1.1); }
+        .whatsapp-btn img { width: 100%; height: 100%; object-fit: cover; }
+    </style>
+</head>
+<body id="bodyMain">
+
+    <button class="theme-switcher" id="themeBtn" onclick="toggleTheme()" title="Switch Theme">
+        🌙
+    </button>
+
+    <div class="clock-widget" id="clockWidget">--:--</div>
+
+    <a href="https://fire.san-andreas.net" target="_blank" class="external-link">SAFD Website ➔</a>
+
+    <a href="index.html" target="_blank" class="whatsapp-btn">
+        <img src="main/img/whatsapp.jpg" alt="WhatsApp Contact">
+    </a>
+
+    <div class="container">
+        <div class="header-section" id="header">
+            <img src="main/img/SAFD.png" alt="SAFD Logo" style="width: 140px; height: auto; margin-bottom: 15px; filter: drop-shadow(0 0 15px rgba(0, 210, 255, 0.4));">
+            <h1 style="font-size: 2rem; font-weight: 800; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px;">San Andreas Fire Department</h1>
+            <h2 style="font-size: 1rem; font-weight: 500; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px;">We Fight Wahat You Fear</h2>
+            <h1 id="greeting">Loading...</h1>
+            <p id="welcome-msg">It's nice to see you. Ready to get things done?</p>
+        </div>
+
+        <div class="categories-container" id="wrapper">
+            <div class="category-pod" onclick="openPod(this)">
+                <div class="pod-icon" style="background: none;">
+                    <img src="main/img/SAFD.png" alt="FM Logo" style="width: 70px; height: 70px; object-fit: contain;">
+                </div>
+                <div class="pod-info">
+                    <h2>Hospital Tools</h2>
+                    <p style="font-size: 0.8rem;">Hospital Report Assistant</p>
+                </div>
+                <div class="tools-grid">
+                    <a href="main/surgeryreport.html" class="tool-card" style="animation-delay: 0.1s"><strong>Surgery Report</strong><span>Form BBCode Gen</span></a>
+                    <a href="main/dermatologybbcodegen.html" class="tool-card" style="animation-delay: 0.2s"><strong>Dermatology Case</strong><span>Report BBCode Gen</span></a>
+                    <a href="main/prescriptionbbcodegen.html" class="tool-card" style="animation-delay: 0.3s"><strong>Prescription</strong><span>Form BBCode Gen</span></a>
+                    <a href="main/patientrecordbbcodegen.html" class="tool-card" style="animation-delay: 0.4s"><strong>Patient Record</strong><span>Form BBCode Gen</span></a>
+                    <a href="main/laboratorycasereport1.html" class="tool-card" style="animation-delay: 0.5s"><strong>Laboratory Case</strong><span>Report BBCode Gen</span></a>
+                    <a href="main/laboratorycasereport2.html" class="tool-card" style="animation-delay: 0.6s"><strong>Laboratory Drug Test</strong><span>Report BBCode Gen</span></a>
+                </div>
+            </div>
+
+            <div class="category-pod" onclick="openPod(this)">
+                <div class="pod-icon" style="background: none;">
+                    <img src="main/img/SAFD.png" alt="FM Logo" style="width: 70px; height: 70px; object-fit: contain;">
+                </div>
+                <div class="pod-info">
+                    <h2>Firefighters Tools</h2>
+                    <p style="font-size: 0.8rem;">If any request</p>
+                </div>
+                <div class="tools-grid">
+                    <a href="index.html" class="tool-card" style="animation-delay: 0.1s"><strong>Coming Soon</strong><span>N/A</span></a>
+                    <a href="index.html" class="tool-card" style="animation-delay: 0.2s"><strong>Coming Soon</strong><span>N/A</span></a>
+                </div>
+            </div>
+
+            <div class="category-pod" onclick="openPod(this)">
+                <div class="pod-icon" style="background: none;">
+                    <img src="main/img/HCI.png" alt="FM Logo" style="width: 70px; height: 70px; object-fit: contain;">
+                </div>
+                <div class="pod-info">
+                    <h2>Healthcare & Insurance</h2>
+                    <p style="font-size: 0.8rem;">Healthcare & Insurance Tools</p>
+                </div>
+                <div class="tools-grid">
+                    <a href="main/cmrbbcodegen.html" class="tool-card" style="animation-delay: 0.1s"><strong>Certificate of Medical Record</strong> <span>Release BBCode Gen</span></a>
+                    <a href="main/hibbcodegen.html" class="tool-card" style="animation-delay: 0.2s"><strong>Health Insurance</strong> <span>Form BBCode Gen</span></a>
+                </div>
+            </div>
+
+            <div class="category-pod" onclick="confirmFM(this)">
+                <button class="fm-info-btn" onclick="showFMInfo(event)">!</button>
+                <div class="pod-icon" style="background: none;">
+                    <img src="main/img/FM.png" alt="FM Logo" style="width: 70px; height: 70px; object-fit: contain;">
+                </div>
+                <div class="pod-info">
+                    <h2>Financial Management</h2>
+                    <p style="font-size: 0.8rem;">Financial Management Tools</p>
+                </div>
+                <div class="tools-grid">
+                    <a href="main/fchweeklycalculator.html" class="tool-card" style="animation-delay: 0.1s"><strong>FCH Weekly</strong> <span>Calculator</span></a>
+                    <a href="main/asghweeklycalculator.html" class="tool-card" style="animation-delay: 0.2s"><strong>ASGH Weekly</strong> <span>Calculator</span></a>
+                    <a href="main/cghweeklycalculator.html" class="tool-card" style="animation-delay: 0.3s"><strong>CGH Weekly</strong> <span>Calculator</span></a>
+                    <a href="main/incomestatementbbcodegen.html" class="tool-card" style="animation-delay: 0.4s"><strong>District Income Statement</strong><span>Report BBCode Gen</span></a>
+                    <a href="https://docs.google.com/spreadsheets/d/1XLC2-XZ_ma8oGC62Md-ByEje9qaffzYl45ssAOQoPck/edit?gid=0#gid=0" class="tool-card" style="animation-delay: 0.1s"><strong>Fort Carson Hospital Income Statement Calculator</strong> <span>Spreadsheet</span></a>
+                    <a href="https://docs.google.com/spreadsheets/d/1vKHmYtsdjAbHct6CmeOFkKV3252Ap_zIjem4OWzbw5E/edit?gid=0#gid=0" class="tool-card" style="animation-delay: 0.1s"><strong>All Saint's General Hospital Income Statement Calculator</strong> <span>Spreadsheet</span></a>
+                    <a href="https://docs.google.com/spreadsheets/d/1oP0MaFRb3TxTx2uvMqLgkrkFcqsAngsBKgAAhzMdvPo/edit?gid=0#gid=0" class="tool-card" style="animation-delay: 0.1s"><strong>County General Hospital Income Statement Calculator</strong> <span>Spreadsheet</span></a>
+                    <a href="https://docs.google.com/spreadsheets/d/1qxfmIAiWEdH2qR8OisjNEAvVkTGD2pShO7ZtVCAuHrc/edit?gid=0#gid=0" class="tool-card" style="animation-delay: 0.1s"><strong>Fire Station 34 Income Statement Calculator</strong> <span>Spreadsheet</span></a>
+                    <a href="https://docs.google.com/spreadsheets/d/1hMDb0q9VIr64aV9Q9LhPb3uZzD5CTVbO2-nQO2JmgbQ/edit?gid=0#gid=0" class="tool-card" style="animation-delay: 0.1s"><strong>Fire Station 60 Income Statement Calculator</strong> <span>Spreadsheet</span></a>
+                </div>
+            </div>
+        </div>
+
+        <h3 id="footer-prompt" style="margin-top: 40px; color: var(--sub-text); font-weight: 400; letter-spacing: 2px; text-transform: uppercase; font-size: 1rem; transition: all 0.5s ease; max-height: 50px; overflow: hidden;">What do you need?</h3>
+
+        <button class="btn-back" id="backBtn" onclick="closeAll(event)">Back to Menu</button>
+    </div>
+
+    <div id="fm-warning-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2 style="color: #ff4757; margin-bottom: 15px; font-size: 1.8rem;">⚠️ RESTRICTED AREA</h2>
+            <p style="font-size: 1.1rem; margin-bottom: 15px;">Mohon hanya anggota FM yang membuka section ini!!!</p>
+            <p style="font-size: 0.9rem; color: #ccc; line-height: 1.5;"></p>
+            
+            <div id="fm-initial-controls" class="modal-buttons">
+                <button class="btn-confirm" onclick="showInputFM()">Saya Anggota FM</button>
+                <button class="btn-cancel" onclick="closeModal()">Saya Bukan Anggota FM</button>
+            </div>
+
+            <div id="fm-verify-controls" style="display: none; flex-direction: column; gap: 15px; margin-top: 20px;">
+                <div class="password-container">
+                    <input type="password" id="fm-username" placeholder="Enter Password" onkeydown="if(event.key === 'Enter') validateFM()" style="width: 100%; padding: 12px 40px 12px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: white; text-align: center; font-size: 1rem; outline: none;">
+                    <i class="fas fa-eye password-toggle" onclick="togglePassword()"></i>
+                </div>
+                <button class="btn-confirm" onclick="validateFM()">Masuk</button>
+            </div>
+
+            <div id="fm-error-msg" style="display: none; color: #ff4757; font-weight: 800; margin-top: 20px; font-size: 1.4rem; animation: shake 0.4s ease-in-out;">
+                KAMU BUKAN ANGGOTA FM
+            </div>
+        </div>
+    </div>
+
+    <div id="fm-info-modal" class="modal-overlay">
+        <div class="modal-content" style="text-align: left; max-width: 600px;">
+            <h3 style="color: #00d2ff; margin-bottom: 20px; text-align: center; font-size: 1.5rem;">IMPORTANT INFORMATION</h3>
+            <ol style="line-height: 1.6; margin-bottom: 25px; padding-left: 20px; font-size: 1rem;">
+                <li style="margin-bottom: 10px;">Jangan membuka kalkulator hospital lain karena akan berpengaruh pada localstorage kalian masing masing.</li>
+                <li style="margin-bottom: 10px;">Semoga dengan adanya website ini akan membantu personil SAFD dan meningkatkan performa kerja.</li>
+                <li>Kalo ada pertanyaan jangan sungkan untuk bertanya di grup yeahhh gesss.</li>
+            </ol>
+            <div style="text-align: center;">
+                <button id="btn-fm-info-ok" class="btn-confirm" onclick="closeFMInfo()" disabled style="background: #444; cursor: not-allowed; min-width: 100px;">OK (3)</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let themeIndex = 0; // 0: Dark, 1: Light, 2: System
+        const themes = ['dark', 'light', 'system'];
+        const icons = ['🌙', '☀️', '💻'];
+
+        function toggleTheme() {
+            themeIndex = (themeIndex + 1) % 3;
+            const currentTheme = themes[themeIndex];
+            const btn = document.getElementById('themeBtn');
+            
+            btn.innerText = icons[themeIndex];
+
+            if (currentTheme === 'system') {
+                const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+                document.body.setAttribute('data-theme', isDark ? 'dark' : 'light');
+            } else {
+                document.body.setAttribute('data-theme', currentTheme);
+            }
+        }
+
+        function setGreeting() {
+            const hour = new Date().getHours();
+            const greetingElement = document.getElementById('greeting');
+            const welcomeMsg = document.getElementById('welcome-msg');
+            
+            let greetText = "";
+            let subText = "";
+
+            if (hour >= 5 && hour < 12) {
+                greetText = "Good Morning";
+                subText = "Rise and shine! Wishing you a productive start to your day.";
+            } else if (hour >= 12 && hour < 17) {
+                greetText = "Good Afternoon";
+                subText = "Hope your day is going well! Let's finish those tasks.";
+            } else if (hour >= 17 && hour < 21) {
+                greetText = "Good Evening";
+                subText = "Wrapping up the day? You've worked hard today.";
+            } else {
+                greetText = "Good Night";
+                subText = "Burning the midnight oil? Don't forget to rest soon.";
+            }
+
+            greetingElement.innerText = greetText;
+            welcomeMsg.innerText = subText;
+        }
+
+        setGreeting();
+
+        function updateClockWidget() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('clockWidget').innerText = timeString;
+        }
+        setInterval(updateClockWidget, 1000);
+        updateClockWidget();
+
+        setTimeout(() => {
+            const greetingElement = document.getElementById('greeting');
+            const welcomeMsg = document.getElementById('welcome-msg');
+            
+            greetingElement.style.opacity = '0';
+            
+            setTimeout(() => {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                greetingElement.innerText = `Now is ${timeString}`;
+                greetingElement.style.opacity = '1';
+                
+                setTimeout(() => {
+                    greetingElement.classList.add('fade-out');
+                    welcomeMsg.classList.add('fade-out');
+                }, 3000);
+            }, 1000);
+        }, 3000);
+
+        function openPod(element) {
+            if(element.classList.contains('active')) return;
+            const allPods = document.querySelectorAll('.category-pod');
+            const header = document.getElementById('header');
+            const backBtn = document.getElementById('backBtn');
+            const footerPrompt = document.getElementById('footer-prompt');
+
+            allPods.forEach(pod => { if(pod !== element) pod.classList.add('hidden'); });
+            element.classList.add('active');
+            header.classList.add('hide');
+            if(footerPrompt) footerPrompt.classList.add('fade-out');
+            backBtn.style.display = 'block';
+        }
+
+        function closeAll(event) {
+            if(event) event.stopPropagation();
+            const allPods = document.querySelectorAll('.category-pod');
+            const header = document.getElementById('header');
+            const backBtn = document.getElementById('backBtn');
+            const footerPrompt = document.getElementById('footer-prompt');
+
+            allPods.forEach(pod => { pod.classList.remove('hidden'); pod.classList.remove('active'); });
+            backBtn.style.display = 'none';
+            if(footerPrompt) footerPrompt.classList.remove('fade-out');
+            header.classList.remove('hide');
+        }
+
+        let pendingPod = null;
+        const encryptedPass = "Zm1nYWNvcg==";
+
+        function confirmFM(element) {
+            if(element.classList.contains('active')) return;
+            pendingPod = element;
+            document.getElementById('fm-warning-modal').classList.add('show');
+        }
+
+        function showInputFM() {
+            document.getElementById('fm-initial-controls').style.display = 'none';
+            document.getElementById('fm-verify-controls').style.display = 'flex';
+            document.getElementById('fm-username').focus();
+        }
+
+        function validateFM() {
+            const inputName = document.getElementById('fm-username').value.trim();
+            const isValid = btoa(inputName) === encryptedPass;
+
+            if (isValid) {
+                if(pendingPod) openPod(pendingPod);
+                closeModal();
+            } else {
+                document.getElementById('fm-verify-controls').style.display = 'none';
+                document.getElementById('fm-error-msg').style.display = 'block';
+                setTimeout(() => {
+                    closeModal();
+                }, 2000);
+            }
+        }
+
+        function togglePassword() {
+            const input = document.getElementById('fm-username');
+            const icon = document.querySelector('.password-toggle');
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = "password";
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('fm-warning-modal').classList.remove('show');
+            pendingPod = null;
+            setTimeout(resetFMModal, 300);
+        }
+
+        function showFMInfo(event) {
+            event.stopPropagation();
+            const modal = document.getElementById('fm-info-modal');
+            const btn = document.getElementById('btn-fm-info-ok');
+            modal.classList.add('show');
+            
+            let timeLeft = 3;
+            btn.disabled = true;
+            btn.style.background = '#444';
+            btn.style.cursor = 'not-allowed';
+            btn.innerText = `OK (${timeLeft})`;
+            
+            const timer = setInterval(() => {
+                timeLeft--;
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    btn.disabled = false;
+                    btn.style.background = '#ff4757';
+                    btn.style.cursor = 'pointer';
+                    btn.innerText = 'OK';
+                } else {
+                    btn.innerText = `OK (${timeLeft})`;
+                }
+            }, 1000);
+        }
+
+        function closeFMInfo() {
+            document.getElementById('fm-info-modal').classList.remove('show');
+        }
+
+        function resetFMModal() {
+            document.getElementById('fm-initial-controls').style.display = 'flex';
+            document.getElementById('fm-verify-controls').style.display = 'none';
+            document.getElementById('fm-error-msg').style.display = 'none';
+            document.getElementById('fm-username').value = '';
+        }
+
+        document.getElementById('bodyMain').onclick = function(e) {
+            if(e.target.id === 'bodyMain' || e.target.classList.contains('container')) closeAll(e);
+        }
+    </script>
+</body>
+</html>
