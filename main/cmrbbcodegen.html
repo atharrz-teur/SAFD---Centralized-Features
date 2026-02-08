@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAFD - Medical Certificate Generator</title>
+    <link rel="icon" href="https://i.postimg.cc/V6qpRTsK/SAFD-LOGO-MINI2.png">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --safd-red: #008670;
+            --safd-blue: #10678D;
+            --bg-subtle: #f8fafc;
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #333;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1080px;
+            margin: auto;
+            background: white;
+            padding: 45px;
+            border-radius: 25px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .header { text-align: center; margin-bottom: 40px; }
+        .header img { width: 110px; margin-bottom: 15px; }
+        h1 { font-family: 'Montserrat', sans-serif; color: var(--safd-red); font-size: 1.7rem; text-transform: uppercase; margin: 0; }
+
+        .section-card {
+            background: var(--bg-subtle);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 25px;
+            color: var(--safd-red);
+            font-weight: 700;
+            text-transform: uppercase;
+            border-bottom: 2px solid #dee5ed;
+            padding-bottom: 10px;
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .form-group { display: flex; flex-direction: column; }
+        .full-width { grid-column: 1 / -1; }
+        
+        label { font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; color: #4a5568; }
+
+        input, select {
+            padding: 12px 15px;
+            border: 1.5px solid #cbd5e0;
+            border-radius: 10px;
+            font-family: inherit;
+            transition: var(--transition);
+            background: #fff;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--safd-red);
+            box-shadow: 0 0 0 3px rgba(128, 0, 0, 0.1);
+        }
+
+        .auto-info {
+            font-size: 0.7rem;
+            color: var(--safd-blue);
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        .sig-options {
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px dashed #cbd5e0;
+            margin-top: 15px;
+        }
+
+        .flex-row { display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-end; }
+        .checkbox-group { display: flex; gap: 15px; padding: 10px 0; }
+        .checkbox-item { display: flex; align-items: center; gap: 5px; font-size: 0.85rem; cursor: pointer; }
+
+        .action-btns { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-top: 10px; }
+        button {
+            padding: 18px; border: none; border-radius: 12px;
+            font-family: 'Montserrat', sans-serif; font-weight: 700;
+            cursor: pointer; transition: var(--transition); text-transform: uppercase;
+        }
+        #generateBtn { background: var(--safd-red); color: white; }
+        #copyBtn { background: #2d3748; color: white; }
+
+        .output-container {
+            margin-top: 40px; background: #1a202c;
+            border-radius: 15px; padding: 30px; color: #cbd5e0;
+            font-family: 'Consolas', monospace; font-size: 0.85rem;
+            white-space: pre-wrap; overflow-y: auto; max-height: 400px;
+        }
+
+        .footer {
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #edf2f7;
+            text-align: center;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            color: #718096;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+        }
+
+        .footer-item { display: flex; align-items: center; gap: 6px; }
+        .footer-divider { width: 4px; height: 4px; background: #cbd5e0; border-radius: 50%; }
+        .footer b { color: var(--safd-red); }
+
+        .hidden { display: none; }
+
+        .back-home-wrapper {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 9999;
+        }
+        .back-home-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .back-home-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+    </style>
+</head>
+<body>
+
+<div class="back-home-wrapper">
+    <a href="index.html" class="back-home-btn">
+        &#8592; Back to Menu
+    </a>
+</div>
+
+<div class="container">
+    <div class="header">
+        <img src="https://i.imgur.com/lsgYdLH.png" alt="SAFD">
+        <h1>Medical Certificate Generator</h1>
+    </div>
+
+    <form id="bbcodeForm">
+        <div class="section-card">
+            <div class="section-header">📋 Patient Identity</div>
+            <div class="input-grid">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="name" placeholder="e.g. Abertforth Zeonathaan">
+                </div>
+                <div class="form-group">
+                    <label>Date of Birth</label>
+                    <input type="text" id="dob" placeholder="Select Date" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Purpose</label>
+                    <input type="text" id="purpose" placeholder="e.g. Firearm License">
+                </div>
+                <div class="form-group full-width">
+                    <label>Residential Address</label>
+                    <input type="text" id="address" placeholder="Residential address details">
+                </div>
+            </div>
+        </div>
+
+        <div class="section-card">
+            <div class="section-header">🧪 Laboratory Analysis & Validity</div>
+            <div class="input-grid">
+                <div class="form-group">
+                    <label>Examination Date</label>
+                    <input type="text" id="carriedout" placeholder="Select Date" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Valid Until</label>
+                    <input type="text" id="validUntil" placeholder="Auto-calculated" readonly style="background: #edf2f7; color: #2d3748; font-weight: bold;">
+                    <span class="auto-info">* Auto-filled (+21 days)</span>
+                </div>
+                <div class="form-group">
+                    <label>Blood Pressure</label>
+                    <input type="text" id="bp" placeholder="120/80 mmHg">
+                </div>
+
+                <div class="form-group full-width" style="margin: 10px 0;">
+                    <label>Substance Dependency Status</label>
+                    <select id="dependent" style="border: 2px solid var(--safd-blue);">
+                        <option value="WAS NOT">WAS NOT DEPENDENT</option>
+                        <option value="WAS">WAS DEPENDENT</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Nicotine Level</label>
+                    <select id="nicotine">
+                        <option value="[color=#00BF00][b]Negative (-)[/b][/color]">Negative (-)</option>
+                        <option value="[color=#FFBF00][b]Low[/b][/color]">Low</option>
+                        <option value="[color=#FF8000][b]Medium[/b][/color]">Medium</option>
+                        <option value="[color=#FF0000][b]High[/b][/color]">High</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Marijuana Level</label>
+                    <select id="marijuana">
+                        <option value="[color=#00BF00][b]Negative (-)[/b][/color]">Negative (-)</option>
+                        <option value="[color=#FFBF00][b]Low[/b][/color]">Low</option>
+                        <option value="[color=#FF8000][b]Medium[/b][/color]">Medium</option>
+                        <option value="[color=#FF0000][b]High[/b][/color]">High</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Cocaine Level</label>
+                    <select id="cocaine">
+                        <option value="[color=#00BF00][b]Negative (-)[/b][/color]">Negative (-)</option>
+                        <option value="[color=#FFBF00][b]Low[/b][/color]">Low</option>
+                        <option value="[color=#FF8000][b]Medium[/b][/color]">Medium</option>
+                        <option value="[color=#FF0000][b]High[/b][/color]">High</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-card">
+            <div class="section-header">🖋️ Signation</div>
+            <div class="input-grid">
+                <div class="form-group" style="grid-column: span 2;">
+                    <label>HCI Staff Name</label>
+                    <input type="text" id="yourName" placeholder="e.g. HCI Staff, Jusuf Ackerly">
+                </div>
+                <div class="form-group">
+                    <label>Signature Type</label>
+                    <select id="sigType">
+                        <option value="image">Image (URL)</option>
+                        <option value="text">Custom Text</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="sig-options">
+                <div id="sigImageArea" class="form-group">
+                    <label>Signature Image URL</label>
+                    <input type="text" id="signatureLink" placeholder="https://i.imgur.com/example.png">
+                </div>
+
+                <div id="sigTextArea" class="hidden">
+                    <div class="flex-row">
+                        <div class="form-group" style="flex: 2;">
+                            <label>Signature Text</label>
+                            <input type="text" id="sigText" placeholder="Your Digital Signature">
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label>Size</label>
+                            <select id="sigSize">
+                                <option value="50">Tiny (50)</option>
+                                <option value="85">Small (85)</option>
+                                <option value="100" selected>Normal (100)</option>
+                                <option value="150">Large (150)</option>
+                                <option value="200">Huge (200)</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label>Font</label>
+                            <select id="sigFont">
+                                <option value="default">Default</option>
+                                <option value="Arial">Arial</option>
+                                <option value="Courier New">Courier</option>
+                                <option value="Georgia">Georgia</option>
+                                <option value="Impact">Impact</option>
+                                <option value="Times New Roman">Times New Roman</option>
+                                <option value="Verdana">Verdana</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item"><input type="checkbox" id="sigBold"> Bold</label>
+                        <label class="checkbox-item"><input type="checkbox" id="sigItalic"> Italic</label>
+                        <label class="checkbox-item"><input type="checkbox" id="sigUnderline"> Underline</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-btns">
+            <button type="button" id="generateBtn">🚀 Generate BBCode</button>
+            <button type="button" id="copyBtn">📋 Copy Code</button>
+        </div>
+    </form>
+
+    <div class="output-container">
+        <pre id="bbcodeOutput">The generated code will appear here...</pre>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-item">© 2026 <b>San Andreas Fire Department</b></div>
+            <div class="footer-divider"></div>
+            <div class="footer-item">Healthcare & Insurance Division</div>
+            <div class="footer-divider"></div>
+            <div class="footer-item">Developed by <b>Abertforth Zeonathaan - Athar</b></div>
+        </div>
+    </footer>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#dob').datepicker({ dateFormat: 'dd/mm/yy', changeMonth: true, changeYear: true, yearRange: '1900:2026' });
+        
+        $('#carriedout').datepicker({ 
+            dateFormat: 'dd/mm/yy', 
+            onSelect: function(dateText) {
+                const parts = dateText.split('/');
+                const date = new Date(parts[2], parts[1] - 1, parts[0]);
+                date.setDate(date.getDate() + 21);
+                const dd = String(date.getDate()).padStart(2, '0');
+                const mm = String(date.getMonth() + 1).padStart(2, '0');
+                const yyyy = date.getFullYear();
+                $('#validUntil').val(`${dd}/${mm}/${yyyy}`);
+            }
+        });
+
+        $('#sigType').change(function() {
+            if($(this).val() === 'image') {
+                $('#sigImageArea').removeClass('hidden');
+                $('#sigTextArea').addClass('hidden');
+            } else {
+                $('#sigImageArea').addClass('hidden');
+                $('#sigTextArea').removeClass('hidden');
+            }
+        });
+
+        $('#generateBtn').click(function() {
+            let finalSig = "";
+            if($('#sigType').val() === 'image') {
+                const imgUrl = $('#signatureLink').val() || '<Answer Here>';
+                finalSig = `[img]${imgUrl}[/img]`;
+            } else {
+                let txt = $('#sigText').val() || '<Answer Here>';
+                const size = $('#sigSize').val();
+                const font = $('#sigFont').val();
+                if($('#sigBold').is(':checked')) txt = `[b]${txt}[/b]`;
+                if($('#sigItalic').is(':checked')) txt = `[i]${txt}[/i]`;
+                if($('#sigUnderline').is(':checked')) txt = `[u]${txt}[/u]`;
+                txt = `[size=${size}]${txt}[/size]`;
+                if(font !== 'default') txt = `[font=${font}]${txt}[/font]`;
+                finalSig = txt;
+            }
+
+            const template = `[divbox=white][aligntable=left,0,0,0,0,0,transparent][img]https://i.postimg.cc/RFd9JsR5/safdjg-2020-resized-2.png[/img][/aligntable][aligntable=right,0,0,0,0,0,transparent][img]https://i.postimg.cc/Qt5wpSVY/Webp-net-resizeimage-7.png[/img][/aligntable]
+[size=200][center][font=times new roman][color=#800000]San Andreas Fire Department
+[size=140]Certificate of Medical Records[/size][/center][/font][/color][/size]
+[center]CITY OF LOS SANTOS * 214 DOWNTOWN CENTRAL BUSINESS DISTRICT * LOS SANTOS SA 55133
+[font=times new roman][size=150]Office of Public Operations[/size][/font][/center]
+[hr][/hr]
+[center][divbox=#800000][color=#FFFFFF][size=200][font=times new roman][b]RELEASED[/b][/font][/size][/color][/divbox][/center]
+[hr][/hr]
+[b][i][center][size=120]This is to certify that:[/size][/center][/i][/b]
+[hr][/hr][space][/space]
+[center][b]Name:[/b] ${$('#name').val() || '<Answer Here>'}
+[b]Date of Birth:[/b] ${$('#dob').val() || '<Answer Here>'}
+[b]Address:[/b] ${$('#address').val() || '<Answer Here>'}
+[/center]
+[space][/space]
+A laboratory examination of urine was carried out at [b]${$('#carriedout').val() || '<Answer Here>'}[/b] with the results that the patient [b]${$('#dependent').val()}[/b] dependent on the substance, as follows:
+[hr][/hr]
+[list][*][b] Nicotine:[/b] ${$('#nicotine').val()}
+[*][b] Marijuana:[/b] ${$('#marijuana').val()}
+[*][b] Cocaine:[/b] ${$('#cocaine').val()}
+[/list]
+with [b]Blood Pressure:[/b] ${$('#bp').val() || '<Answer Here>'}
+[hr][/hr]
+[center][b][size=120]This certificate was issued due:[/size][/b][/center]
+[b]Purpose for:[/b] ${$('#purpose').val() || '<Answer Here>'}
+[b]Valid from now untill:[/b] ${$('#validUntil').val() || '<Answer Here>'}
+[space][/space]
+[right]Sincerely,
+Healthcare & Insurance Staff,
+${finalSig}
+${$('#yourName').val() || '<Answer Here>'}[/right][/divbox]`;
+
+            $('#bbcodeOutput').text(template);
+            $('html, body').animate({ scrollTop: $(".output-container").offset().top - 20 }, 600);
+        });
+
+        $('#copyBtn').click(function() {
+            const text = $('#bbcodeOutput').text();
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = $(this);
+                btn.text('✅ COPIED!').css('background', '#28a745');
+                setTimeout(() => btn.text('📋 COPY CODE').css('background', '#2d3748'), 2000);
+            });
+        });
+    });
+</script>
+</body>
+</html>
