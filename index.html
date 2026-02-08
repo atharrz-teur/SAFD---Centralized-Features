@@ -168,32 +168,34 @@
 
         .categories-container { 
             display: none; 
-            flex-wrap: wrap; justify-content: center; gap: 20px; width: 100%; 
+            width: 100%; height: 400px;
+            position: relative;
+            align-items: center; justify-content: center;
             opacity: 0;
             transform: scale(0.8);
             transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
+        .categories-container.expanded { height: auto; display: block; }
 
         .category-pod {
-            width: 100%; max-width: 600px;
+            width: 420px; height: 260px;
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
             background: var(--card-bg);
             border: 1px solid var(--card-border);
-            padding: 25px 30px; border-radius: 20px;
-            cursor: pointer; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            display: flex; align-items: center; gap: 20px;
-            flex-wrap: wrap; backdrop-filter: blur(15px); position: relative;
+            padding: 20px; border-radius: 20px;
+            cursor: default; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px;
+            backdrop-filter: blur(15px);
             overflow: hidden;
             box-shadow: var(--glass-shadow);
-            animation: slideUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
         }
         
-        @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .category-pod:nth-child(1) { animation-delay: 0.1s; }
-        .category-pod:nth-child(2) { animation-delay: 0.2s; }
-        .category-pod:nth-child(3) { animation-delay: 0.3s; }
-        .category-pod:nth-child(4) { animation-delay: 0.4s; }
-        .category-pod:nth-child(5) { animation-delay: 0.5s; }
+        /* Carousel States */
+        .category-pod.c-center { transform: translate(-50%, -50%) scale(1); z-index: 10; opacity: 1; filter: blur(0); cursor: pointer; }
+        .category-pod.c-left { transform: translate(-50%, -50%) translateX(-400px) scale(0.85); z-index: 5; opacity: 0.6; filter: blur(4px); pointer-events: none; }
+        .category-pod.c-right { transform: translate(-50%, -50%) translateX(400px) scale(0.85); z-index: 5; opacity: 0.6; filter: blur(4px); pointer-events: none; }
+        .category-pod.c-hidden { transform: translate(-50%, -50%) scale(0.5); opacity: 0; z-index: 0; pointer-events: none; }
         
         .category-pod::before {
             content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
@@ -201,17 +203,19 @@
             transition: 0.5s;
         }
 
-        .category-pod:hover { background: rgba(255, 255, 255, 0.1); transform: translateY(-7px) scale(1.02); border-color: var(--primary); box-shadow: var(--hover-glow); }
+        .category-pod.c-center:hover { background: rgba(255, 255, 255, 0.1); transform: translate(-50%, -50%) scale(1.05); border-color: var(--primary); box-shadow: var(--hover-glow); }
         .category-pod:hover::before { left: 100%; }
         
-        .pod-icon { width: 60px; height: 60px; background: rgba(0, 210, 255, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; animation: icon-pulse 2s infinite; }
-        .pod-info { text-align: left; }
+        .pod-icon { width: 80px; height: 80px; background: rgba(0, 210, 255, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; animation: icon-pulse 2s infinite; margin-bottom: 10px; }
+        .pod-info { text-align: center; }
         .pod-info h2 { font-size: 1.4rem; letter-spacing: 1px; color: var(--text-color); }
         .pod-info p { color: var(--sub-text); }
 
         .tools-grid { display: none; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; width: 100%; margin-top: 30px; }
         
-        .category-pod.active { max-width: 100%; border-radius: 30px; background: rgba(0, 210, 255, 0.05); cursor: default; padding: 40px; align-content: flex-start; }
+        .category-pod.active { position: relative; top: auto; left: auto; margin: 0; width: 100%; height: auto; max-width: 100%; border-radius: 30px; background: rgba(0, 210, 255, 0.05); cursor: default; padding: 40px; align-content: flex-start; flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: flex-start; gap: 20px; transform: none !important; z-index: 20; filter: none; opacity: 1; }
+        .category-pod.active .pod-info { text-align: left; }
+        .category-pod.active .pod-icon { margin-bottom: 0; }
         .category-pod.active .tools-grid { display: grid; flex-basis: 100%; }
         .category-pod.active:hover { transform: none; box-shadow: none; }
         .category-pod.hidden { display: none; }
@@ -239,6 +243,19 @@
             box-shadow: 0 10px 20px rgba(0,0,0,0.5); 
             border: none; 
         }
+
+        .nav-btn {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white; width: 50px; height: 50px; border-radius: 50%;
+            cursor: pointer; z-index: 100; display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; backdrop-filter: blur(5px); transition: 0.3s;
+        }
+        .nav-btn:hover { background: var(--primary); color: #050a1f; box-shadow: 0 0 15px var(--primary); }
+        .nav-btn.prev { left: 20px; }
+        .nav-btn.next { right: 20px; }
+        .categories-container.expanded .nav-btn { display: none; }
+        .category-pod.hidden { display: none; }
         
         .btn-landing {
             display: none;
@@ -375,6 +392,37 @@
             height: 100px; width: auto; margin: 0 20px;
             opacity: 0.8;
         }
+
+        .lock-badge {
+            position: absolute; top: 15px; right: 15px;
+            width: 35px; height: 35px;
+            background: #ff4757; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 0.9rem;
+            box-shadow: 0 0 15px #ff4757; z-index: 15;
+        }
+        .lock-badge::after {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            border-radius: 50%; border: 2px solid #ff4757;
+            animation: lock-wave 1.5s infinite;
+        }
+        @keyframes lock-wave { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(2.5); opacity: 0; } }
+        .category-pod.active .lock-badge { display: none; }
+
+        .unlock-badge {
+            position: absolute; top: 15px; right: 15px;
+            width: 35px; height: 35px;
+            background: #2ed573; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 0.9rem;
+            box-shadow: 0 0 15px #2ed573; z-index: 15;
+        }
+        .unlock-badge::after {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            border-radius: 50%; border: 2px solid #2ed573;
+            animation: lock-wave 1.5s infinite;
+        }
+        .category-pod.active .unlock-badge { display: none; }
         @keyframes scrollLogos { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
     </style>
 </head>
@@ -404,7 +452,11 @@
         </div>
 
         <div class="categories-container" id="wrapper">
+            <button class="nav-btn prev" onclick="moveCarousel(-1, event)"><i class="fas fa-chevron-left"></i></button>
+            <button class="nav-btn next" onclick="moveCarousel(1, event)"><i class="fas fa-chevron-right"></i></button>
+
             <div class="category-pod" onclick="openPod(this)">
+                <div class="unlock-badge"><i class="fas fa-lock-open"></i></div>
                 <div class="pod-icon" style="background: none;">
                     <img src="main/img/SAFD.png" alt="SAFD Logo" style="width: 70px; height: auto; object-fit: contain;">
                 </div>
@@ -423,11 +475,12 @@
             </div>
 
             <div class="category-pod" onclick="openPod(this)">
+                <div class="unlock-badge"><i class="fas fa-lock-open"></i></div>
                 <div class="pod-icon" style="background: none;">
                     <img src="main/img/SAFD.png" alt="SAFD Logo" style="width: 70px; height: auto; object-fit: contain;">
                 </div>
                 <div class="pod-info">
-                    <h2>Firefighters Tools</h2>
+                    <h2>Firefighters Assistant</h2>
                     <p style="font-size: 0.8rem;">If any request</p>
                 </div>
                 <div class="tools-grid">
@@ -436,7 +489,23 @@
                 </div>
             </div>
 
+            <div class="category-pod" onclick="confirmAccess(this, 'FO')">
+                <div class="lock-badge"><i class="fas fa-lock"></i></div>
+                <div class="pod-icon" style="background: none;">
+                    <img src="main/img/FO.png" alt="FO Logo" style="width: 70px; height: auto; object-fit: contain;">
+                </div>
+                <div class="pod-info">
+                    <h2>Fire Officer Assistant</h2>
+                    <p style="font-size: 0.8rem;">Coming Soon</p>
+                </div>
+                <div class="tools-grid">
+                    <a href="index.html" class="tool-card" style="animation-delay: 0.1s"><strong>Coming Soon</strong><span>N/A</span></a>
+                    <a href="index.html" class="tool-card" style="animation-delay: 0.2s"><strong>Coming Soon</strong><span>N/A</span></a>
+                </div>
+            </div>
+
             <div class="category-pod" onclick="confirmAccess(this, 'HCI')">
+                <div class="lock-badge"><i class="fas fa-lock"></i></div>
                 <div class="pod-icon" style="background: none;">
                     <img src="main/img/HCI.png" alt="HCI Logo" style="width: 70px; height: auto; object-fit: contain;">
                 </div>
@@ -451,6 +520,7 @@
             </div>
 
             <div class="category-pod" onclick="confirmAccess(this, 'SFO')">
+                <div class="lock-badge"><i class="fas fa-lock"></i></div>
                 <div class="pod-icon" style="background: none;">
                     <img src="main/img/SFO.png" alt="SFO Logo" style="width: 70px; height: auto; object-fit: contain;">
                 </div>
@@ -468,6 +538,7 @@
             </div>
 
             <div class="category-pod" onclick="confirmAccess(this, 'FM')">
+                <div class="lock-badge"><i class="fas fa-lock"></i></div>
                 <button class="fm-info-btn" onclick="showFMInfo(event)">!</button>
                 <div class="pod-icon" style="background: none;">
                     <img src="main/img/FM.png" alt="FM Logo" style="width: 70px; height: auto; object-fit: contain;">
@@ -649,7 +720,7 @@
                 header.style.display = 'none';
                 
                 // Show Menu
-                wrapper.style.display = 'flex';
+                wrapper.style.display = 'block';
                 btnLanding.style.display = 'block';
                 if(footerPrompt) footerPrompt.style.display = 'block';
                 
@@ -659,6 +730,7 @@
                 // Animate Menu In
                 wrapper.style.opacity = '1';
                 wrapper.style.transform = 'scale(1)';
+                updateCarousel();
             }, 800);
         }
 
@@ -694,15 +766,50 @@
             }, 500);
         }
 
+        let carouselIndex = 0;
+        
+        function updateCarousel() {
+            const pods = document.querySelectorAll('.category-pod');
+            pods.forEach((pod, index) => {
+                pod.className = 'category-pod';
+                if (index === carouselIndex) {
+                    pod.classList.add('c-center');
+                } else if (index === (carouselIndex - 1 + pods.length) % pods.length) {
+                    pod.classList.add('c-left');
+                } else if (index === (carouselIndex + 1) % pods.length) {
+                    pod.classList.add('c-right');
+                } else {
+                    pod.classList.add('c-hidden');
+                }
+            });
+        }
+
+        function moveCarousel(direction, event) {
+            if(event) event.stopPropagation();
+            const pods = document.querySelectorAll('.category-pod');
+            carouselIndex = (carouselIndex + direction + pods.length) % pods.length;
+            updateCarousel();
+        }
+
         function openPod(element) {
             if(element.classList.contains('active')) return;
+            
+            if (!element.classList.contains('c-center')) {
+                const pods = Array.from(document.querySelectorAll('.category-pod'));
+                carouselIndex = pods.indexOf(element);
+                updateCarousel();
+                return;
+            }
+
             const allPods = document.querySelectorAll('.category-pod');
             const backBtn = document.getElementById('backBtn');
             const footerPrompt = document.getElementById('footer-prompt');
             const btnLanding = document.getElementById('btn-landing');
+            const wrapper = document.getElementById('wrapper');
 
             allPods.forEach(pod => { if(pod !== element) pod.classList.add('hidden'); });
             element.classList.add('active');
+            wrapper.classList.add('expanded');
             
             if(footerPrompt) footerPrompt.style.display = 'none';
             btnLanding.style.display = 'none';
@@ -716,8 +823,12 @@
             const footerPrompt = document.getElementById('footer-prompt');
             const btnLanding = document.getElementById('btn-landing');
             const header = document.getElementById('header');
+            const wrapper = document.getElementById('wrapper');
 
             allPods.forEach(pod => { pod.classList.remove('hidden'); pod.classList.remove('active'); });
+            wrapper.classList.remove('expanded');
+            updateCarousel();
+            
             backBtn.style.display = 'none';
             
             if (header.style.display === 'none') {
@@ -729,6 +840,13 @@
         let pendingPod = null;
         let currentAccessType = '';
         const accessConfig = {
+            'FO': {
+                pass: "Zm9iZXJhdA==", 
+                desc: "Maaf hanya anggota Fire Officer yang membuka section ini!!!",
+                confirmText: "Saya Anggota FO",
+                cancelText: "Saya Bukan Anggota FO",
+                errorText: "KAMU BUKAN ANGGOTA FO"
+            },
             'FM': {
                 pass: "Zm1nYWNvcg==", 
                 desc: "Maaf hanya anggota FM yang membuka section ini!!!",
@@ -854,7 +972,7 @@
         setTimeout(() => {
             const tipBox = document.getElementById('tip-box');
             if(tipBox) tipBox.classList.add('show');
-        }, 2000);
+        }, 1000);
 
         // Background Logos Animation
         const logoNames = ['ASGH', 'CGH', 'FCH', 'FS34', 'FS60', 'HCI', 'OFPI', 'PA', 'MED', 'FSD', 'TD', 'RD'];
